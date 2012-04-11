@@ -1,0 +1,12 @@
+[core]
+    editor = emacs
+[push]
+    default = current
+[color]
+    ui = True
+[pack]
+    threads = 0
+[alias]
+    history = log --graph --pretty=format:'%C(bold blue)<%an> %Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+    whatis = show -s --pretty='tformat:%h (%s, %ad)' --date=short
+    new = !sh -c 'git log $1@{1}..$1@{0} "$@"'

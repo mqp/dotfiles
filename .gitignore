@@ -1,0 +1,9 @@
+.AppleDouble/
+.DS_Store/
+*.elc
+.emacs.d/places
+.emacs.d/eshell/history
+.emacs.d/.smex-items
+.emacs.d/auto-save-list/
+.emacs.d/backups/
+.emacs.d/url/
