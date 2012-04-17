@@ -2,8 +2,8 @@
     "maxerr": 1000,
 
     "predef": [
-        "G", "_this", "_super", "Text", // why is this not in browser predefs?
-        "_", "Mixpanel", "MixpanelLib", "mpmetrics", "Showdown", "Highcharts", "FB",
+        "G", "Class", "_this", "_class", "_super", "self", "Text", // why is this not in browser predefs?
+        "_", "_gaq", "Mixpanel", "MixpanelLib", "mpmetrics", "Showdown", "Highcharts", "FB",
         "MD5", "PwdMeter", "Quixey", "prettyPrint",
         "$DIV", "$RDIV", "$SPAN", "$P", "$A", "$INPUT", "$LABEL",
         "$BR", "$CENTER", "$TD", "$UL", "$OL", "$LI", "$IFRAME", "$FORM"],
