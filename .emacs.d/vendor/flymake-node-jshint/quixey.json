@@ -3,14 +3,14 @@
 
     "predef": [
         "G", "Class", "_this", "_class", "_super", "self", "Text", // why is this not in browser predefs?
-        "_", "_gaq", "Mixpanel", "MixpanelLib", "mpmetrics", "Showdown", "Highcharts", "FB",
+        "_", "_gaq", "Showdown", "Highcharts", "FB",
         "MD5", "PwdMeter", "Quixey", "prettyPrint",
         "$DIV", "$RDIV", "$SPAN", "$P", "$A", "$INPUT", "$LABEL",
         "$BR", "$CENTER", "$TD", "$UL", "$OL", "$LI", "$IFRAME", "$FORM"],
 
     "browser": true,
     "jquery": true,
-    "standard": true,
+    "nonstandard": true,
     "devel": true, // allow e.g. console.log and console.alert
 
     "newcap": true, // always capitalize constructors
@@ -24,7 +24,8 @@
     "bitwise": true, // reject bitwise operators unless specified in that file -- usually an error
     "boss": false, // reject assignments in conditionals unless specified in that file
     "curly": false, // allow omitting braces on single-statement blocks
-    "eqeqeq": true, // reject type-coercing comparisons
+    "eqeqeq": true, // reject type-coercing comparisons...
+    "eqnull": true, // ...except foo == null
     "evil": true, // allow eval, if you want it.
     "immed": true, // force function definition-invocations to be in parens for readability
     "loopfunc": false, // reject functions defined in loop blocks
