@@ -1,0 +1,12 @@
+[pep8]
+
+# things i don't care for:
+# E301: expecting 1 blank line (sometimes it's nice to group related things closely)
+# E302: two blank lines between functions (it's lame)
+# E303: too many blank lines (ditto)
+# E241: multiple spaces after ':' and ',' (sometimes it's nice to line things up!)
+# E221: multiple spaces before operator (ditto)
+ignore = E301,E302,E303,E241,E221
+
+# 120 seems vaguely reasonable
+max-line-length = 120

@@ -97,11 +97,46 @@
 (add-hook 'js-mode-hook (lambda () (flymake-mode 1)))
 
 (setq auto-fill-mode -1)
-(setq-default fill-column 99999)
-(setq fill-column 99999)
 (setq ido-max-directory-size 100000)
 (add-hook 'prog-mode-hook 'linum-mode)
 (add-hook 'js-mode-hook 'fn-mode)
+
+;; python
+(setq py-install-directory "~/.emacs.d/vendor/python-mode/")
+(setq py-shell-name "ipython")
+(require 'python-mode)
+(require 'flymake)
+
+(defun flymake-pyflakes-init ()
+  (let* ((temp-file (flymake-init-create-temp-buffer-copy
+                     'flymake-create-temp-inplace))
+         (local-file (file-relative-name
+                      temp-file
+                      (file-name-directory buffer-file-name))))
+    (list "pyflakes" (list "--ignore=E111" local-file))))
+
+(defun flymake-pep8-init ()
+  (let* ((temp-file (flymake-init-create-temp-buffer-copy
+                     'flymake-create-temp-inplace))
+         (local-file (file-relative-name
+                      temp-file
+                      (file-name-directory buffer-file-name))))
+    (list "pep8" (list "--repeat" local-file))))
+
+(defun flymake-pylint-init ()
+  (let* ((temp-file (flymake-init-create-temp-buffer-copy
+                     'flymake-create-temp-inplace))
+         (local-file (file-relative-name
+                      temp-file
+                      (file-name-directory buffer-file-name))))
+    (list "epylint" (list local-file))))
+
+(defun flymake-python-init () (flymake-pep8-init))
+;(defun flymake-python-init () (flymake-pylint-init))
+;(defun flymake-python-init ()
+;(flymake-pep8-init))
+
+(add-to-list 'flymake-allowed-file-name-masks '("\\.py\\'" flymake-python-init))
 
 ;; haskell
 (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
@@ -111,8 +146,20 @@
 (require 'erc-join)
 (require 'erc-services)
 (require 'tls)
+(add-hook 'erc-mode-hook (lambda () (auto-fill-mode 0)))
+(make-variable-buffer-local 'erc-fill-column)
+(add-hook 'window-configuration-change-hook
+          '(lambda ()
+             (save-excursion
+               (walk-windows
+                (lambda (w)
+                  (let ((buffer (window-buffer w)))
+                    (set-buffer buffer)
+                    (when (eq major-mode 'erc-mode)
+                      (setq erc-fill-column (- (window-width w) 2)))))))))
+
 (setq erc-autojoin-channels-alist '(("quixey.com" "#eng")
-                                    ("freenode.net" "#lesswrong" "#go" "#clojure" "#emacs" "#javascript")))
+                                    ("freenode.net" "#lesswrong" "#lw-minicamp" "#go" "#clojure" "#emacs" "#javascript" "#meteor")))
 (setq erc-autojoin-delay 1)
 (setq erc-email-userid "cata")
 (setq erc-modules '(autojoin button completion irccontrols list match menu move-to-prompt netsplit networks noncommands readonly ring scrolltobottom stamp track))
@@ -128,8 +175,9 @@
 (defun erc-connect ()
   "Connect to IRC."
   (interactive)
-  ;;(erc :server "irc.freenode.net" :port 6667 :nick "cata")
-  (erc-tls :server "ircd.quixey.com" :port 6697 :nick "mquander" :password "focus"))
+  (erc :server "irc.freenode.net" :port 6667 :nick "cata")
+  ;;(erc-tls :server "ircd.quixey.com" :port 6697 :nick "mquander" :password "focus")
+  )
 
 (load-file "~/.emacs.d/bindings/bindings-general.el")
 (add-hook 'prog-mode-hook

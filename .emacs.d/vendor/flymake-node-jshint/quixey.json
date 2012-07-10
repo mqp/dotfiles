@@ -3,8 +3,8 @@
 
     "predef": [
         "G", "Class", "_this", "_class", "_super", "self", "Text", // why is this not in browser predefs?
-        "_", "_gaq", "Showdown", "Highcharts", "FB",
-        "MD5", "PwdMeter", "Quixey", "prettyPrint",
+        "_", "_gaq", "Showdown", "Highcharts", "FB", "Backbone", "Zepto", "jQuery",
+        "MD5", "PwdMeter", "Quixey", "prettyPrint", "iScroll", "_q",
         "$DIV", "$RDIV", "$SPAN", "$P", "$A", "$INPUT", "$LABEL",
         "$BR", "$CENTER", "$TD", "$UL", "$OL", "$LI", "$IFRAME", "$FORM"],
 

@@ -10,3 +10,6 @@
     history = log --graph --pretty=format:'%C(bold blue)<%an> %Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
     whatis = show -s --pretty='tformat:%h (%s, %ad)' --date=short
     new = !sh -c 'git log $1@{1}..$1@{0} "$@"'
+[user]
+	email = marshall@quixey.com
+	name = Marshall Quander
