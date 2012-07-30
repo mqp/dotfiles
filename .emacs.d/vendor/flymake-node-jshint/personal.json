@@ -1,0 +1,33 @@
+{
+    "maxerr": 1000,
+    "indent": 4,
+
+    "predef": [
+        "_", "Meteor", "Template"
+    ],
+
+
+    "browser": true,
+    "jquery": true,
+    "standard": true,
+    "devel": true, // allow e.g. console.log and console.alert
+
+    "newcap": true, // always capitalize constructors
+    "nomen": false, // allow underscore-prefixed properties
+    "onevar": false, // one var is ugly
+    "plusplus": false, // allow increment and decrement
+    "sub": true, // allow subscripting property names if you please
+    "trailing": true, // reject trailing whitespace
+    "white": true, // reject other odd indentation and whitespace
+
+    "bitwise": true, // reject bitwise operators unless specified in that file -- usually an error
+    "boss": false, // reject assignments in conditionals unless specified in that file
+    "curly": false, // allow omitting braces on single-statement blocks
+    "eqeqeq": true, // reject type-coercing comparisons
+    "evil": true, // allow eval, if you want it.
+    "immed": true, // force function definition-invocations to be in parens for readability
+    "loopfunc": false, // reject functions defined in loop blocks
+    "noempty": true, // reject empty blocks
+    "undef": true, // reject undefined variables unless they are in predef above...
+    "latedef": true // ...and variables defined after use
+}

@@ -4,7 +4,7 @@
 (if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
 (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (recentf-mode 1)
-
+(setq visible-bell nil)
 (set-default-font "Consolas-13")
 
 ;; Don't clutter up directories with files~
@@ -38,6 +38,8 @@
     starter-kit-lisp
     starter-kit-bindings
     starter-kit-eshell
+    slime
+    slime-repl
     clojure-mode
     csharp-mode
     php-mode
@@ -93,7 +95,7 @@
 (require 'flymake)
 (require 'flymake-cursor)
 (require 'flymake-node-jshint)
-(setq flymake-node-jshint-config "~/.emacs.d/vendor/flymake-node-jshint/quixey.json")
+(setq flymake-node-jshint-config "~/.emacs.d/vendor/flymake-node-jshint/personal.json")
 (add-hook 'js-mode-hook (lambda () (flymake-mode 1)))
 
 (setq auto-fill-mode -1)

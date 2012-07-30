@@ -1,6 +1,8 @@
 .AppleDouble/
 .DS_Store/
 *.elc
+.emacs.d/elpa
+.emacs.d/elpa/archives/gnu
 .emacs.d/places
 .emacs.d/eshell/history
 .emacs.d/.smex-items
