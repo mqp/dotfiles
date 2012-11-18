@@ -41,6 +41,7 @@
     slime
     slime-repl
     clojure-mode
+    nrepl
     csharp-mode
     php-mode
     haskell-mode)
