@@ -11,7 +11,7 @@
     whatis = show -s --pretty='tformat:%h (%s, %ad)' --date=short
     new = !sh -c 'git log $1@{1}..$1@{0} "$@"'
 [user]
-	email = marshall@quixey.com
-	name = Marshall Quander
+    email = mquander@gmail.com
+    name = maugrim
 [rerere]
     enabled = True

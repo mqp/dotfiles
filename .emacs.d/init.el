@@ -4,8 +4,8 @@
 (if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
 (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (recentf-mode 1)
-
-(set-default-font "Consolas-13")
+(setq visible-bell nil)
+(set-default-font "Consolas-11")
 
 ;; Don't clutter up directories with backup files~
 (setq backup-directory-alist `(("." . "~/.emacs.d/backups")))
@@ -41,7 +41,11 @@
     starter-kit-lisp
     starter-kit-bindings
     starter-kit-eshell
+    zenburn-theme
+    slime
+    slime-repl
     clojure-mode
+    nrepl
     csharp-mode
     php-mode
     haskell-mode)
@@ -59,6 +63,8 @@
                  (not (equal f ".."))
                  (not (equal f ".")))
         (add-to-list 'load-path name)))))
+
+(load-theme 'zenburn t)
 
 (require 'clojure-mode)
 (require 'quack)
@@ -96,7 +102,7 @@
 (require 'flymake)
 (require 'flymake-cursor)
 (require 'flymake-node-jshint)
-(setq flymake-node-jshint-config "~/.emacs.d/vendor/flymake-node-jshint/quixey.json")
+(setq flymake-node-jshint-config "~/.emacs.d/vendor/flymake-node-jshint/personal.json")
 (add-hook 'js-mode-hook (lambda () (flymake-mode 1)))
 
 (setq auto-fill-mode -1)
@@ -262,3 +268,15 @@
 (global-set-key (key "M-<left>") 'windmove-left)        ; move to right
 (global-set-key [M-up] 'windmove-up)              ; move to upper
 (global-set-key [M-down] 'windmove-down)          ; move to downer
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(custom-safe-themes (quote ("71b172ea4aad108801421cc5251edb6c792f3adbaecfa1c52e94e3d99634dee7" default))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
