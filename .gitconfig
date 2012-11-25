@@ -13,3 +13,5 @@
 [user]
 	email = marshall@quixey.com
 	name = Marshall Quander
+[rerere]
+    enabled = True

@@ -3,7 +3,7 @@
 
     "predef": [
         "G", "Class", "_this", "_class", "_super", "self", "Text", // why is this not in browser predefs?
-        "_", "_gaq", "Showdown", "Highcharts", "FB", "Backbone", "Zepto", "jQuery",
+        "_", "_gaq", "Showdown", "Highcharts", "FB", "Backbone", "Support", "Zepto", "jQuery",
         "MD5", "PwdMeter", "Quixey", "prettyPrint", "iScroll", "_q",
         "$DIV", "$RDIV", "$SPAN", "$P", "$A", "$INPUT", "$LABEL",
         "$BR", "$CENTER", "$TD", "$UL", "$OL", "$LI", "$IFRAME", "$FORM"],
@@ -27,8 +27,10 @@
     "eqeqeq": true, // reject type-coercing comparisons...
     "eqnull": true, // ...except foo == null
     "evil": true, // allow eval, if you want it.
-    "immed": true, // force function definition-invocations to be in parens for readability
+    "immed": false, // older browsers like function definition-invocations out of parens
+    "laxbreak": true, // splitting ternary operators is ok
     "loopfunc": false, // reject functions defined in loop blocks
+    "multistr": true, // multi-line strings are convenient for templates
     "noempty": true, // reject empty blocks
     "undef": true, // reject undefined variables unless they are in predef above...
     "latedef": true // ...and variables defined after use

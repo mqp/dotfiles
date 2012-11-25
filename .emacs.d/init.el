@@ -7,8 +7,11 @@
 
 (set-default-font "Consolas-13")
 
-;; Don't clutter up directories with files~
+;; Don't clutter up directories with backup files~
 (setq backup-directory-alist `(("." . "~/.emacs.d/backups")))
+;; ...or #autosave files
+(setq auto-save-file-name-transforms
+      `((".*" ,temporary-file-directory t)))
 
 (setq frame-title-format
       '(:eval
