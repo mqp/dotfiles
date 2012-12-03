@@ -19,6 +19,7 @@ URxvt*.iconFile: /usr/share/icons/Humanity/apps/64/gnome-terminal.svg
 URxvt*.letterSpace: -2
 URxvt*.scrollBar: false
 URxvt*.saveLines: 10000
+URxvt*.termName: screen-256color
 
 *foreground: #FFFFFF
 *background: #000010
