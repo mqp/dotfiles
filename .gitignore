@@ -3,9 +3,12 @@
 *.elc
 .emacs.d/elpa
 .emacs.d/elpa/archives/gnu
+.emacs.d/elpa/archives/marmalade
 .emacs.d/places
 .emacs.d/eshell/history
+.emacs.d/eshell/lastdir
 .emacs.d/.smex-items
 .emacs.d/auto-save-list/
 .emacs.d/backups/
 .emacs.d/url/
+.emacs.d/session*

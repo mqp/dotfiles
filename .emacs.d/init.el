@@ -68,7 +68,6 @@
 
 (require 'clojure-mode)
 (require 'quack)
-(require 'tfs)
 
 (add-to-list 'auto-mode-alist '("\\.aspx\\'" . html-mode))
 (add-to-list 'auto-mode-alist '("\\.tmpl\\'" . html-mode))
@@ -102,12 +101,14 @@
 (require 'flymake)
 (require 'flymake-cursor)
 (require 'flymake-node-jshint)
-(setq flymake-node-jshint-config "~/.emacs.d/vendor/flymake-node-jshint/personal.json")
+(setq flymake-node-jshint-config "~/.emacs.d/vendor/flymake-node-jshint/quixey.json")
 (add-hook 'js-mode-hook (lambda () (flymake-mode 1)))
 
 (setq auto-fill-mode -1)
 (setq ido-max-directory-size 100000)
 (add-hook 'prog-mode-hook 'linum-mode)
+(add-hook 'prog-mode-hook 'electric-pair-mode)
+(add-hook 'prog-mode-hook 'electric-indent-mode)
 (add-hook 'js-mode-hook 'fn-mode)
 
 ;; python
@@ -140,10 +141,17 @@
                       (file-name-directory buffer-file-name))))
     (list "epylint" (list local-file))))
 
-(defun flymake-python-init () (flymake-pep8-init))
-;(defun flymake-python-init () (flymake-pylint-init))
-;(defun flymake-python-init ()
-;(flymake-pep8-init))
+
+(defun flymake-lintrunner-init ()
+  (let* ((temp-file (flymake-init-create-temp-buffer-copy
+                     'flymake-create-temp-inplace))
+         (local-file (file-relative-name
+                      temp-file
+                      (file-name-directory buffer-file-name))))
+    (list "lintrunner" (list local-file))))
+
+(defun flymake-python-init ()
+  (flymake-lintrunner-init))
 
 (add-to-list 'flymake-allowed-file-name-masks '("\\.py\\'" flymake-python-init))
 
@@ -231,43 +239,11 @@
         (revert-buffer t t t))))
   (message "Refreshed open files."))
 
-(defun revert-all-buffers ()
-  "Refreshes all open buffers from their respective files."
-  (interactive)
-  (dolist (buf (buffer-list))
-    (with-current-buffer buf
-      (when (and (buffer-file-name) (not (buffer-modified-p)))
-        (revert-buffer t t t))))
-  (message "Refreshed open files."))
-
 (defun kill-other-buffers ()
   "Kill all buffers except the current buffer."
   (interactive)
   (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
 
-
-(defvar real-keyboard-keys
-  '(("M-<up>"        . "\M-[1;3A")
-    ("M-<down>"      . "\M-[1;3B")
-;;    ("M-<right>"     . "")
-    ("M-<left>"      . "\M-[1;3D")
-    ("C-<return>"    . "\C-j")
-    ("C-<delete>"    . "\M-[3;5~")
-    ("C-<up>"        . "\M-[1;5A")
-    ("C-<down>"      . "\M-[1;5B")
-    ("C-<right>"     . "\M-[1;5C")
-    ("C-<left>"      . "\M-[1;5D"))
-  "An assoc list of pretty key strings and their terminal equivalents.")
-
-(defun key (desc)
-    (or (and window-system (read-kbd-macro desc))
-        (or (cdr (assoc desc real-keyboard-keys))
-            (read-kbd-macro desc))))
-
-(global-set-key (key "M-<right>") 'windmove-right)          ; move to left
-(global-set-key (key "M-<left>") 'windmove-left)        ; move to right
-(global-set-key [M-up] 'windmove-up)              ; move to upper
-(global-set-key [M-down] 'windmove-down)          ; move to downer
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
