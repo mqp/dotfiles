@@ -12,3 +12,4 @@
 .emacs.d/backups/
 .emacs.d/url/
 .emacs.d/session*
+.httpie/sessions
