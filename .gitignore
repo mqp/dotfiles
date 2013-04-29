@@ -2,8 +2,6 @@
 .DS_Store/
 *.elc
 .emacs.d/elpa
-.emacs.d/elpa/archives/gnu
-.emacs.d/elpa/archives/marmalade
 .emacs.d/places
 .emacs.d/eshell/history
 .emacs.d/eshell/lastdir
