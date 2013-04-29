@@ -7,6 +7,7 @@
 
 (global-set-key (kbd "C-x f") 'ido-recentf-open)
 
-;; why do people use forward-word
 (global-set-key (kbd "M-f") 'forward-word)
 (global-set-key (kbd "M-b") 'backward-word)
+
+(global-set-key (kbd "C-x g") 'magit-status)
