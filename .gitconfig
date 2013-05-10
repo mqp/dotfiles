@@ -1,5 +1,3 @@
-[core]
-    editor = emacs
 [push]
     default = current
 [color]
