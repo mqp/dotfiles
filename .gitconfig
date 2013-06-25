@@ -13,3 +13,5 @@
     name = maugrim
 [rerere]
     enabled = True
+[merge]
+	conflictstyle = diff3

@@ -5,7 +5,7 @@
 (if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
 (recentf-mode 1)
 (setq visible-bell nil)
-(set-default-font "Consolas-11")
+(set-default-font "Consolas-13")
 
 ;; Don't clutter up directories with backup files~
 (setq backup-directory-alist `(("." . "~/.emacs.d/backups")))
