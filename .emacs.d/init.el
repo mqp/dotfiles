@@ -67,7 +67,15 @@
 (load-theme 'zenburn t)
 
 (require 'clojure-mode)
+; adjust indents for core.logic macros
+(put-clojure-indent 'run* 'defun)
+(put-clojure-indent 'run 'defun)
+(put-clojure-indent 'fresh 'defun)
+
 (require 'quack)
+(require 'extempore)
+
+(add-to-list 'auto-mode-alist '("\\.xtm$" . extempore-mode))
 
 (add-to-list 'auto-mode-alist '("\\.aspx\\'" . html-mode))
 (add-to-list 'auto-mode-alist '("\\.tmpl\\'" . html-mode))
