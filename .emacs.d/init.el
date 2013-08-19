@@ -41,6 +41,10 @@
     starter-kit-lisp
     starter-kit-bindings
     starter-kit-eshell
+    auto-complete
+    ac-nrepl
+    popup
+    fuzzy
     zenburn-theme
     slime
     slime-repl
@@ -66,11 +70,45 @@
 
 (load-theme 'zenburn t)
 
+(require 'auto-complete-config)
+(ac-config-default)
+(ac-set-trigger-key "TAB")
+(define-key ac-completing-map "\M-/" 'ac-stop)
+(add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
+(setq ac-auto-start nil)
+(setq ac-auto-show-menu nil)
+(setq ac-use-quick-help t)
+(setq ac-quick-help-delay 0.2)
+
+;; hook AC into completion-at-point
+(defun set-auto-complete-as-completion-at-point-function ()
+  (setq completion-at-point-functions '(auto-complete)))
+(add-hook 'auto-complete-mode-hook 'set-auto-complete-as-completion-at-point-function)
+
 (require 'clojure-mode)
-; adjust indents for core.logic macros
+;; adjust indents for core.logic macros
+(add-hook 'clojure-mode-hook 'subword-mode)
 (put-clojure-indent 'run* 'defun)
 (put-clojure-indent 'run 'defun)
 (put-clojure-indent 'fresh 'defun)
+
+(require 'nrepl)
+(add-hook 'nrepl-mode-hook 'subword-mode)
+(add-hook 'nrepl-interaction-mode-hook 'nrepl-turn-on-eldoc-mode)
+(setq nrepl-history-file "~/.emacs.d/nrepl-history")
+(setq nrepl-hide-special-buffers t)
+(setq nrepl-popup-stacktraces nil)
+(setq nrepl-popup-stacktraces-in-repl nil)
+(add-to-list 'same-window-buffer-names "*nrepl*")
+
+(require 'ac-nrepl)
+(dolist (hook '(nrepl-mode-hook nrepl-interaction-mode-hook))
+  (add-hook hook 'ac-nrepl-setup)
+  (add-hook hook 'set-auto-complete-as-completion-at-point-function))
+(define-key nrepl-mode-map  (kbd "C-c C-d") 'ac-nrepl-popup-doc)
+(define-key nrepl-interaction-mode-map (kbd "C-c C-d") 'ac-nrepl-popup-doc)
+
+(eval-after-load "auto-complete" '(add-to-list 'ac-modes 'nrepl-mode))
 
 (require 'quack)
 (require 'extempore)
