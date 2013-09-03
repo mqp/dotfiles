@@ -23,7 +23,6 @@
 
 (setq initial-scratch-message nil)
 
-(require 'tramp)
 (add-to-list 'backup-directory-alist
              (cons tramp-file-name-regexp nil))
 
@@ -86,8 +85,8 @@
   (setq completion-at-point-functions '(auto-complete)))
 (add-hook 'auto-complete-mode-hook 'set-auto-complete-as-completion-at-point-function)
 
-(require 'clojure-mode)
 ;; adjust indents for core.logic macros
+(require 'clojure-mode)
 (add-hook 'clojure-mode-hook 'subword-mode)
 (put-clojure-indent 'run* 'defun)
 (put-clojure-indent 'run 'defun)
@@ -102,7 +101,6 @@
 (setq nrepl-popup-stacktraces-in-repl nil)
 (add-to-list 'same-window-buffer-names "*nrepl*")
 
-(require 'ac-nrepl)
 (dolist (hook '(nrepl-mode-hook nrepl-interaction-mode-hook))
   (add-hook hook 'ac-nrepl-setup)
   (add-hook hook 'set-auto-complete-as-completion-at-point-function))
@@ -111,43 +109,20 @@
 
 (eval-after-load "auto-complete" '(add-to-list 'ac-modes 'nrepl-mode))
 
-(require 'quack)
-(require 'extempore)
-
 (add-to-list 'auto-mode-alist '("\\.xtm$" . extempore-mode))
-
 (add-to-list 'auto-mode-alist '("\\.aspx\\'" . html-mode))
 (add-to-list 'auto-mode-alist '("\\.tmpl\\'" . html-mode))
 (add-to-list 'auto-mode-alist '("\\.jt\\'" . html-mode))
 (add-to-list 'auto-mode-alist '("\\.info" . conf-windows-mode))
-
-(require 'markdown-mode)
 (add-to-list 'auto-mode-alist '("\\.md" . markdown-mode))
-
-(require 'powershell-mode)
 (add-to-list 'auto-mode-alist '("\\.ps1\\'" . powershell-mode))
-
-(require 'dos)
 (add-to-list 'auto-mode-alist '("\\.bat$" . dos-mode))
-
-(require 'csharp-mode)
 (add-to-list 'auto-mode-alist '("\\.cs$" . csharp-mode))
-
-(require 'drupal-mode)
 (add-to-list 'auto-mode-alist '("\\.\\(module\\|test\\|install\\|theme\\)$" . drupal-mode))
-
-(require 'php-mode)
 (add-to-list 'auto-mode-alist '("\\.\\(php\\|inc\\)$" . php-mode))
-
-(require 'x12-mode)
 (add-to-list 'auto-mode-alist '("\\.\\([xX]12\\|850\\|810\\|856\\|894\\)$" . x12-mode))
 
 ;; javascript
-(require 'js)
-(require 'fn-mode)
-(require 'flymake)
-(require 'flymake-cursor)
-(require 'flymake-node-jshint)
 (setq flymake-node-jshint-config "~/.emacs.d/vendor/flymake-node-jshint/quixey.json")
 (add-hook 'js-mode-hook (lambda () (flymake-mode 1)))
 (add-hook 'js-mode-hook 'subword-mode)
@@ -161,8 +136,6 @@
 
 ;; python
 (setq py-install-directory "~/.emacs.d/vendor/python-mode/")
-
-(require 'python-mode)
 (setq py-shell-name "ipython")
 
 (defun flymake-pyflakes-init ()
@@ -201,6 +174,7 @@
 (defun flymake-python-init ()
   (flymake-lintrunner-init))
 
+(require 'flymake)
 (add-to-list 'flymake-allowed-file-name-masks '("\\.py\\'" flymake-python-init))
 
 ;; haskell
@@ -208,9 +182,6 @@
 (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
 
 ;; erc
-(require 'erc-join)
-(require 'erc-services)
-(require 'tls)
 (add-hook 'erc-mode-hook (lambda () (auto-fill-mode 0)))
 (make-variable-buffer-local 'erc-fill-column)
 (add-hook 'window-configuration-change-hook
@@ -252,7 +223,6 @@
 
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
-(require 'sudo)
 (defun sudo-before-save-hook ()
   (set (make-local-variable 'sudo:file) (buffer-file-name))
   (when sudo:file
