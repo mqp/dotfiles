@@ -1,9 +1,10 @@
 ;; Turn off mouse interface early in startup to avoid momentary
 ;; display
 
-(if (fboundp 'menu-bar-mode) (menu-bar-mode -1))
-(if (fboundp 'tool-bar-mode) (tool-bar-mode -1))
+(menu-bar-mode -1)
+(tool-bar-mode -1)
 (recentf-mode 1)
+(setq echo-keystrokes 0.01)
 (setq visible-bell nil)
 (set-default-font "Consolas-13")
 
@@ -149,19 +150,20 @@
 (require 'flymake-node-jshint)
 (setq flymake-node-jshint-config "~/.emacs.d/vendor/flymake-node-jshint/quixey.json")
 (add-hook 'js-mode-hook (lambda () (flymake-mode 1)))
+(add-hook 'js-mode-hook 'subword-mode)
+(add-hook 'js-mode-hook 'fn-mode)
 
 (setq auto-fill-mode -1)
 (setq ido-max-directory-size 100000)
 (add-hook 'prog-mode-hook 'linum-mode)
 (add-hook 'prog-mode-hook 'electric-pair-mode)
 (add-hook 'prog-mode-hook 'electric-indent-mode)
-(add-hook 'js-mode-hook 'fn-mode)
 
 ;; python
 (setq py-install-directory "~/.emacs.d/vendor/python-mode/")
-(setq py-shell-name "ipython")
+
 (require 'python-mode)
-(require 'flymake)
+(setq py-shell-name "ipython")
 
 (defun flymake-pyflakes-init ()
   (let* ((temp-file (flymake-init-create-temp-buffer-copy
@@ -275,6 +277,10 @@
 
 
 (add-hook 'before-save-hook 'sudo-before-save-hook)
+
+(defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
+  "Prevent annoying \"Active processes exist\" query when you quit Emacs."
+  (flet ((process-list ())) ad-do-it))
 
 (defun revert-all-buffers ()
   "Refreshes all open buffers from their respective files."
