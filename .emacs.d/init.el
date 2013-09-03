@@ -6,6 +6,7 @@
 (recentf-mode 1)
 (setq echo-keystrokes 0.01)
 (setq visible-bell nil)
+(setq message-log-max t)
 (set-default-font "Consolas-13")
 
 ;; Don't clutter up directories with backup files~
