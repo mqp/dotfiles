@@ -46,10 +46,13 @@
     ac-nrepl
     popup
     fuzzy
+    flymake-cursor
     zenburn-theme
     slime
     slime-repl
     clojure-mode
+    markdown-mode
+    nginx-mode
     nrepl
     csharp-mode
     php-mode
