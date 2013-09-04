@@ -108,10 +108,23 @@
 
 (add-to-list 'auto-mode-alist '("\\.zsh\\'" . shell-script-mode))
 
+(defun pretty-lambdas ()
+  (font-lock-add-keywords
+   nil `(("(\\(lambda\\>\\)"
+          (0 (progn (compose-region (match-beginning 1) (match-end 1)
+                                    ,(make-char 'greek-iso8859-7 107))
+                    nil))))))
+
+(defun pretty-fn ()
+  (font-lock-add-keywords
+   nil `(("(\\(\\<fn\\>\\)"
+	  (0 (progn (compose-region (match-beginning 1) (match-end 1)
+				    "\u0192"
+				    'decompose-region)))))))
+
 ;; Emacs Lisp
 (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
 (add-hook 'lisp-interaction-mode-hook 'pretty-lambdas)
-(add-hook 'emacs-lisp-mode-hook 'auto-complete-mode)
 (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
 (add-hook 'emacs-lisp-mode-hook 'pretty-lambdas)
 
@@ -183,6 +196,8 @@
 (ac-set-trigger-key "TAB")
 (define-key ac-completing-map "\M-/" 'ac-stop)
 (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
+(add-hook 'emacs-lisp-mode-hook 'auto-complete-mode)
+(add-hook 'clojure-mode-hook 'auto-complete-mode)
 
 ;; hook AC into completion-at-point
 (defun set-auto-complete-as-completion-at-point-function ()
@@ -203,22 +218,7 @@
   (interactive)
   (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
 
-(defun pretty-lambdas ()
-  (font-lock-add-keywords
-   nil `(("(\\(lambda\\>\\)"
-          (0 (progn (compose-region (match-beginning 1) (match-end 1)
-                                    ,(make-char 'greek-iso8859-7 107))
-                    nil))))))
-
-(defun pretty-fn ()
-  (font-lock-add-keywords
-   nil `(("(\\(\\<fn\\>\\)"
-	  (0 (progn (compose-region (match-beginning 1) (match-end 1)
-				    "\u0192"
-				    'decompose-region)))))))
-
 ;; Clojure
-(add-hook 'clojure-mode-hook 'auto-complete-mode)
 (add-hook 'clojure-mode-hook 'turn-on-eldoc-mode)
 (add-hook 'clojure-mode-hook 'pretty-fn)
 (add-hook 'clojure-mode-hook 'subword-mode)
