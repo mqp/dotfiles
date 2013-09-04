@@ -123,7 +123,6 @@
 (add-to-list 'auto-mode-alist '("\\.\\(php\\|inc\\)$" . php-mode))
 
 ;; javascript
-(setq flymake-node-jshint-config "~/.emacs.d/vendor/flymake-node-jshint/quixey.json")
 (add-hook 'js-mode-hook (lambda () (flymake-mode 1)))
 (add-hook 'js-mode-hook 'subword-mode)
 (add-hook 'js-mode-hook 'fn-mode)
