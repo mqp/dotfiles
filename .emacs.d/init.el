@@ -3,8 +3,8 @@
 
 (menu-bar-mode -1)
 (tool-bar-mode -1)
-(recentf-mode 1)
 (setq recentf-save-file "~/.emacs.d/.recentf")
+(recentf-mode 1)
 (setq echo-keystrokes 0.01)
 (setq visible-bell nil)
 (setq message-log-max t)
@@ -77,23 +77,25 @@
 (auto-compile-on-save-mode 1)
 (auto-compile-on-load-mode 1)
 
-(add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
-
-(eval-after-load "auto-complete-config"
-  '(progn
-     (ac-config-default)
-     (ac-set-trigger-key "TAB")
-     (define-key ac-completing-map "\M-/" 'ac-stop)
-     (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
-     (setq ac-auto-start nil)
-     (setq ac-auto-show-menu nil)
-     (setq ac-use-quick-help t)
-     (setq ac-quick-help-delay 0.2)))
+(require 'auto-complete-config)
+(ac-config-default)
+(ac-set-trigger-key "TAB")
+(define-key ac-completing-map "\M-/" 'ac-stop)
+(add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
+(setq ac-auto-start nil)
+(setq ac-auto-show-menu nil)
+(setq ac-use-quick-help t)
+(setq ac-use-menu-map t)
+(setq ac-quick-help-delay 0.2)
 
 ;; hook AC into completion-at-point
 (defun set-auto-complete-as-completion-at-point-function ()
   (setq completion-at-point-functions '(auto-complete)))
 (add-hook 'auto-complete-mode-hook 'set-auto-complete-as-completion-at-point-function)
+
+(add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
+(add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
+(add-hook 'emacs-lisp-mode-hook 'auto-complete-mode)
 
 (defun pretty-fn ()
   (font-lock-add-keywords nil `(("(\\(\\<fn\\>\\)"
@@ -121,14 +123,13 @@
 
 (dolist (hook '(nrepl-mode-hook nrepl-interaction-mode-hook))
   (add-hook hook 'ac-nrepl-setup)
-  (add-hook hook 'set-auto-complete-as-completion-at-point-function))
+  (add-hook hook 'set-auto-complete-as-completion-at-point-function)
+  (add-hook hook 'auto-complete-mode))
 
 (eval-after-load "nrepl"
   '(progn
      (define-key nrepl-mode-map (kbd "C-c C-d") 'ac-nrepl-popup-doc)
      (define-key nrepl-interaction-mode-map (kbd "C-c C-d") 'ac-nrepl-popup-doc)))
-
-(eval-after-load "auto-complete" '(add-to-list 'ac-modes 'nrepl-mode))
 
 (autoload 'extempore-mode "~/.emacs.d/vendor/extempore-mode/extempore.el" "" t)
 (add-to-list 'auto-mode-alist '("\\.xtm$" . extempore-mode))

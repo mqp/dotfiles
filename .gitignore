@@ -8,6 +8,7 @@
 .emacs.d/eshell/history
 .emacs.d/eshell/lastdir
 .emacs.d/.smex-items
+.emacs.d/.recentf
 .emacs.d/nrepl-history
 .emacs.d/ac-comphist.dat
 .emacs.d/auto-save-list/
