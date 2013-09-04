@@ -114,17 +114,12 @@
 (eval-after-load "auto-complete" '(add-to-list 'ac-modes 'nrepl-mode))
 
 (add-to-list 'auto-mode-alist '("\\.xtm$" . extempore-mode))
-(add-to-list 'auto-mode-alist '("\\.aspx\\'" . html-mode))
-(add-to-list 'auto-mode-alist '("\\.tmpl\\'" . html-mode))
-(add-to-list 'auto-mode-alist '("\\.jt\\'" . html-mode))
-(add-to-list 'auto-mode-alist '("\\.info" . conf-windows-mode))
-(add-to-list 'auto-mode-alist '("\\.md" . markdown-mode))
-(add-to-list 'auto-mode-alist '("\\.ps1\\'" . powershell-mode))
-(add-to-list 'auto-mode-alist '("\\.bat$" . dos-mode))
+(add-to-list 'auto-mode-alist '("\\.aspx$'" . html-mode))
+(add-to-list 'auto-mode-alist '("\\.tmpl$'" . html-mode))
+(add-to-list 'auto-mode-alist '("\\.jt$'" . html-mode))
+(add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
 (add-to-list 'auto-mode-alist '("\\.cs$" . csharp-mode))
-(add-to-list 'auto-mode-alist '("\\.\\(module\\|test\\|install\\|theme\\)$" . drupal-mode))
 (add-to-list 'auto-mode-alist '("\\.\\(php\\|inc\\)$" . php-mode))
-(add-to-list 'auto-mode-alist '("\\.\\([xX]12\\|850\\|810\\|856\\|894\\)$" . x12-mode))
 
 ;; javascript
 (setq flymake-node-jshint-config "~/.emacs.d/vendor/flymake-node-jshint/quixey.json")
