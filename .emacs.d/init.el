@@ -50,6 +50,7 @@
     zenburn-theme
     slime
     slime-repl
+    quack
     clojure-mode
     markdown-mode
     nginx-mode
