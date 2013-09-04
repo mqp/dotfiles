@@ -4,6 +4,7 @@
 .#*
 .emacs.d/elpa
 .emacs.d/places
+.emacs.d/tramp
 .emacs.d/eshell/history
 .emacs.d/eshell/lastdir
 .emacs.d/.smex-items
