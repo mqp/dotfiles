@@ -7,13 +7,13 @@
 (setq echo-keystrokes 0.01)
 (setq visible-bell nil)
 (setq message-log-max t)
-(set-default-font "Consolas-13")
+(set-frame-font "Consolas-13")
 
 ;; Don't clutter up directories with backup files~
 (setq backup-directory-alist `(("." . "~/.emacs.d/backups")))
+
 ;; ...or #autosave files
-(setq auto-save-file-name-transforms
-      `((".*" ,temporary-file-directory t)))
+(setq auto-save-file-name-transforms `((".*" ,temporary-file-directory t)))
 
 (setq frame-title-format
       '(:eval
@@ -24,14 +24,14 @@
 
 (setq initial-scratch-message nil)
 
-(add-to-list 'backup-directory-alist
-             (cons tramp-file-name-regexp nil))
+(add-to-list 'backup-directory-alist (cons tramp-file-name-regexp nil))
 
 ;; elpa packages
 (require 'package)
-(add-to-list 'package-archives
-             '("marmalade" . "http://marmalade-repo.org/packages/")
-             '("gnu" . "http://elpa.gnu.org/packages/"))
+(setq package-archives
+      '(("gnu" . "http://elpa.gnu.org/packages/")
+        ("marmalade" . "http://marmalade-repo.org/packages/")
+        ("melpa" . "http://melpa.milkbox.net/packages/")))
 (package-initialize)
 
 (when (not package-archive-contents)
@@ -39,9 +39,7 @@
 
 (defvar my-packages
   '(starter-kit
-    starter-kit-lisp
     starter-kit-bindings
-    starter-kit-eshell
     auto-complete
     ac-nrepl
     popup
@@ -75,29 +73,43 @@
 
 (load-theme 'zenburn t)
 
-(require 'auto-complete-config)
-(ac-config-default)
-(ac-set-trigger-key "TAB")
-(define-key ac-completing-map "\M-/" 'ac-stop)
-(add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
-(setq ac-auto-start nil)
-(setq ac-auto-show-menu nil)
-(setq ac-use-quick-help t)
-(setq ac-quick-help-delay 0.2)
+(auto-compile-on-save-mode 1)
+(auto-compile-on-load-mode 1)
+
+(add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
+
+(eval-after-load "auto-complete-config"
+  '(progn
+     (ac-config-default)
+     (ac-set-trigger-key "TAB")
+     (define-key ac-completing-map "\M-/" 'ac-stop)
+     (add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
+     (setq ac-auto-start nil)
+     (setq ac-auto-show-menu nil)
+     (setq ac-use-quick-help t)
+     (setq ac-quick-help-delay 0.2)))
 
 ;; hook AC into completion-at-point
 (defun set-auto-complete-as-completion-at-point-function ()
   (setq completion-at-point-functions '(auto-complete)))
 (add-hook 'auto-complete-mode-hook 'set-auto-complete-as-completion-at-point-function)
 
-;; adjust indents for core.logic macros
-(require 'clojure-mode)
+(defun pretty-fn ()
+  (font-lock-add-keywords nil `(("(\\(\\<fn\\>\\)"
+                                 (0 (progn (compose-region (match-beginning 1)
+                                                           (match-end 1)
+                                                           "\u0192"
+                                                           'decompose-region)))))))
+(add-hook 'clojure-mode-hook 'pretty-fn)
 (add-hook 'clojure-mode-hook 'subword-mode)
-(put-clojure-indent 'run* 'defun)
-(put-clojure-indent 'run 'defun)
-(put-clojure-indent 'fresh 'defun)
 
-(require 'nrepl)
+;; adjust indents for core.logic macros
+(eval-after-load "clojure-mode"
+  '(progn
+     (put-clojure-indent 'run* 'defun)
+     (put-clojure-indent 'run 'defun)
+     (put-clojure-indent 'fresh 'defun)))
+
 (add-hook 'nrepl-mode-hook 'subword-mode)
 (add-hook 'nrepl-interaction-mode-hook 'nrepl-turn-on-eldoc-mode)
 (setq nrepl-history-file "~/.emacs.d/nrepl-history")
@@ -109,8 +121,11 @@
 (dolist (hook '(nrepl-mode-hook nrepl-interaction-mode-hook))
   (add-hook hook 'ac-nrepl-setup)
   (add-hook hook 'set-auto-complete-as-completion-at-point-function))
-(define-key nrepl-mode-map  (kbd "C-c C-d") 'ac-nrepl-popup-doc)
-(define-key nrepl-interaction-mode-map (kbd "C-c C-d") 'ac-nrepl-popup-doc)
+
+(eval-after-load "nrepl"
+  '(progn
+     (define-key nrepl-mode-map (kbd "C-c C-d") 'ac-nrepl-popup-doc)
+     (define-key nrepl-interaction-mode-map (kbd "C-c C-d") 'ac-nrepl-popup-doc)))
 
 (eval-after-load "auto-complete" '(add-to-list 'ac-modes 'nrepl-mode))
 
@@ -140,45 +155,6 @@
 ;; python
 (setq py-install-directory "~/.emacs.d/vendor/python-mode/")
 (setq py-shell-name "ipython")
-
-(defun flymake-pyflakes-init ()
-  (let* ((temp-file (flymake-init-create-temp-buffer-copy
-                     'flymake-create-temp-inplace))
-         (local-file (file-relative-name
-                      temp-file
-                      (file-name-directory buffer-file-name))))
-    (list "pyflakes" (list "--ignore=E111" local-file))))
-
-(defun flymake-pep8-init ()
-  (let* ((temp-file (flymake-init-create-temp-buffer-copy
-                     'flymake-create-temp-inplace))
-         (local-file (file-relative-name
-                      temp-file
-                      (file-name-directory buffer-file-name))))
-    (list "pep8" (list "--repeat" local-file))))
-
-(defun flymake-pylint-init ()
-  (let* ((temp-file (flymake-init-create-temp-buffer-copy
-                     'flymake-create-temp-inplace))
-         (local-file (file-relative-name
-                      temp-file
-                      (file-name-directory buffer-file-name))))
-    (list "epylint" (list local-file))))
-
-
-(defun flymake-lintrunner-init ()
-  (let* ((temp-file (flymake-init-create-temp-buffer-copy
-                     'flymake-create-temp-inplace))
-         (local-file (file-relative-name
-                      temp-file
-                      (file-name-directory buffer-file-name))))
-    (list "lintrunner" (list local-file))))
-
-(defun flymake-python-init ()
-  (flymake-lintrunner-init))
-
-(require 'flymake)
-(add-to-list 'flymake-allowed-file-name-masks '("\\.py\\'" flymake-python-init))
 
 ;; haskell
 (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
@@ -228,7 +204,7 @@
 
 (defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
   "Prevent annoying \"Active processes exist\" query when you quit Emacs."
-  (flet ((process-list ())) ad-do-it))
+  (flet ((process-list)) ad-do-it))
 
 (defun revert-all-buffers ()
   "Refreshes all open buffers from their respective files."
