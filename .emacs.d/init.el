@@ -195,7 +195,7 @@
   ;;(erc-tls :server "ircd.quixey.com" :port 6697 :nick "mquander" :password "focus")
   )
 
-(load-file "~/.emacs.d/bindings/bindings-general.el")
+(load-file "~/.emacs.d/bindings/bindings-general.elc")
 (add-hook 'prog-mode-hook
           '(lambda () (local-set-key (kbd "RET") 'newline-and-indent)))
 
