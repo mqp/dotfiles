@@ -4,6 +4,7 @@
 (menu-bar-mode -1)
 (tool-bar-mode -1)
 (recentf-mode 1)
+(setq recentf-save-file "~/.emacs.d/.recentf")
 (setq echo-keystrokes 0.01)
 (setq visible-bell nil)
 (setq message-log-max t)
