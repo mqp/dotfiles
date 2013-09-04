@@ -114,7 +114,9 @@
 
 (eval-after-load "auto-complete" '(add-to-list 'ac-modes 'nrepl-mode))
 
+(autoload 'extempore-mode "~/.emacs.d/vendor/extempore-mode/extempore.el" "" t)
 (add-to-list 'auto-mode-alist '("\\.xtm$" . extempore-mode))
+
 (add-to-list 'auto-mode-alist '("\\.aspx$'" . html-mode))
 (add-to-list 'auto-mode-alist '("\\.tmpl$'" . html-mode))
 (add-to-list 'auto-mode-alist '("\\.jt$'" . html-mode))
@@ -125,6 +127,8 @@
 ;; javascript
 (add-hook 'js-mode-hook (lambda () (flymake-mode 1)))
 (add-hook 'js-mode-hook 'subword-mode)
+
+(autoload 'fn-mode "~/.emacs.d/vendor/fn-mode/fn-mode.el" t)
 (add-hook 'js-mode-hook 'fn-mode)
 
 (setq auto-fill-mode -1)
@@ -221,31 +225,6 @@
 (setq-default indent-tabs-mode nil)
 
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
-
-(defun sudo-before-save-hook ()
-  (set (make-local-variable 'sudo:file) (buffer-file-name))
-  (when sudo:file
-    (unless (file-writable-p sudo:file)
-      (set (make-local-variable 'sudo:old-owner-uid) (nth 2 (file-attributes sudo:file)))
-      (when (numberp sudo:old-owner-uid)
-        (unless (= (user-uid) sudo:old-owner-uid)
-          (when (y-or-n-p
-                 (format "File %s is owned by %s, save it with sudo? "
-                         (file-name-nondirectory sudo:file)
-                         (user-login-name sudo:old-owner-uid)))
-            (sudo-chown-file (int-to-string (user-uid)) (sudo-quoting sudo:file))
-            (add-hook 'after-save-hook
-                      (lambda ()
-                        (sudo-chown-file (int-to-string sudo:old-owner-uid)
-                                         (sudo-quoting sudo:file))
-                        (if sudo-clear-password-always
-                            (sudo-kill-password-timeout)))
-                      nil   ;; not append
-                      t    ;; buffer local hook
-                      )))))))
-
-
-(add-hook 'before-save-hook 'sudo-before-save-hook)
 
 (defadvice save-buffers-kill-emacs (around no-query-kill-emacs activate)
   "Prevent annoying \"Active processes exist\" query when you quit Emacs."
