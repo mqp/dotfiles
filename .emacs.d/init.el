@@ -36,6 +36,7 @@
  save-interprogram-paste-before-kill t
  apropos-do-all t
  mouse-yank-at-point t
+ vc-make-backup-files t
  custom-file (concat user-emacs-directory "custom.el")
  package-user-dir (concat user-emacs-directory "elpa")
  backup-directory-alist `(("." . ,(concat user-emacs-directory
@@ -218,10 +219,30 @@
   (interactive)
   (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
 
+(defun pretty-lambdas ()
+  (font-lock-add-keywords
+   nil `(("(\\(lambda\\>\\)"
+          (0 (progn (compose-region (match-beginning 1) (match-end 1)
+                                    ,(make-char 'greek-iso8859-7 107))
+                    nil))))))
+
+(defun pretty-fn ()
+  (font-lock-add-keywords
+   nil `(("(\\(\\<fn\\>\\)"
+	  (0 (progn (compose-region (match-beginning 1) (match-end 1)
+				    "\u0192"
+				    'decompose-region)))))))
+
+(defmacro rename-modeline (package-name mode new-name)
+  `(eval-after-load ,package-name
+     '(defadvice ,mode (after rename-modeline activate)
+        (setq mode-name ,new-name))))
+
 ;; Clojure
 (add-hook 'clojure-mode-hook 'turn-on-eldoc-mode)
 (add-hook 'clojure-mode-hook 'pretty-fn)
 (add-hook 'clojure-mode-hook 'subword-mode)
+(rename-modeline "clojure-mode" clojure-mode "Clj")
 
 ;; adjust indents for core.logic macros
 (eval-after-load "clojure-mode"
@@ -272,6 +293,7 @@
 (add-hook 'js-mode-hook 'fn-mode)
 (add-hook 'js-mode-hook 'flymake-mode)
 (add-hook 'js-mode-hook 'subword-mode)
+(rename-modeline "js-mode" javascript-mode "Clj")
 
 ;; Python
 (setq py-install-directory "~/.emacs.d/vendor/python-mode/")
@@ -294,8 +316,8 @@
                     (when (eq major-mode 'erc-mode)
                       (setq erc-fill-column (- (window-width w) 2)))))))))
 
-(setq erc-autojoin-channels-alist '(("quixey.com" "#eng")
-                                    ("freenode.net" "#lesswrong" "#lw-minicamp" "#go" "#clojure" "#emacs" "#javascript" "#meteor")))
+(setq erc-autojoin-channels-alist
+      '(("freenode.net" "#lesswrong" "#go" "#clojure" "#emacs")))
 (setq erc-autojoin-delay 1)
 (setq erc-email-userid "cata")
 (setq erc-modules '(autojoin button completion irccontrols list match menu move-to-prompt netsplit networks noncommands readonly ring scrolltobottom stamp track))
@@ -308,9 +330,10 @@
 (erc-services-mode 1)
 (erc-autojoin-mode 1)
 
+(require 'tls)
 (defun erc-connect ()
   "Connect to IRC."
   (interactive)
-  (erc :server "irc.freenode.net" :port 6667 :nick "cata"))
+  (erc-tls :server "irc.freenode.net" :port 7000 :nick "cata"))
 
 (load-file "~/.emacs.d/bindings/bindings-general.elc")
