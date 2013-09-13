@@ -19,7 +19,7 @@
 (set-keyboard-coding-system 'utf-8)
 (prefer-coding-system 'utf-8)
 
-(setq
+(setq-default
  echo-keystrokes 0.1
  message-log-max t
  mouse-wheel-mode t
@@ -289,11 +289,12 @@
 (add-to-list 'auto-mode-alist '("\\.\\(php\\|inc\\)$" . php-mode))
 
 ;; Javascript
+(require 'flymake-node-jshint)
 (autoload 'fn-mode "~/.emacs.d/vendor/fn-mode/fn-mode.el" t)
 (add-hook 'js-mode-hook 'fn-mode)
-(add-hook 'js-mode-hook 'flymake-mode)
 (add-hook 'js-mode-hook 'subword-mode)
-(rename-modeline "js-mode" javascript-mode "Clj")
+(add-hook 'js-mode-hook (lambda () (flymake-mode 1)))
+(rename-modeline "js-mode" javascript-mode "JS")
 
 ;; Python
 (setq py-install-directory "~/.emacs.d/vendor/python-mode/")
