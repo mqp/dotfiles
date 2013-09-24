@@ -69,12 +69,17 @@
 (add-hook 'comint-exec-hook 'set-background-process)
 
 (require 'ido)
-(setq-default
+(setq
  ido-max-directory-size 100000
  ido-max-prospects 10
  ido-enable-flex-matching t
  ido-enable-prefix nil
- ido-save-directory-list-file (concat user-emacs-directory "ido.hist"))
+ ido-enable-last-directory-history t
+ ido-use-filename-at-point nil
+ ido-use-url-at-point nil
+ ido-use-virtual-buffers t
+ ido-save-directory-list-file (concat user-emacs-directory "ido.hist")
+ ido-ignore-buffers '("\\` " "*Messages*" "*Compile-Log*"))
 (ido-mode t)
 
 (require 'uniquify)
@@ -183,7 +188,7 @@
 
 ;; smex
 (require 'smex)
-(setq-default smex-save-file (concat user-emacs-directory "smex-items"))
+(setq-default smex-save-file (concat user-emacs-directory ".smex-items"))
 (smex-initialize)
 
 (require 'auto-complete-config)
