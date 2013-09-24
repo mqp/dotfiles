@@ -137,8 +137,8 @@
 ;; elpa packages
 (require 'package)
 (setq package-archives
-      '(("melpa" . "http://melpa.milkbox.net/packages/")
-	("marmalade" . "http://marmalade-repo.org/packages/")
+      '(
+        ("marmalade" . "http://marmalade-repo.org/packages/")
 	("gnu" . "http://elpa.gnu.org/packages/")))
 (package-initialize)
 
@@ -147,15 +147,12 @@
 
 (defvar my-packages
   '(auto-complete
-    auto-compile
     ac-nrepl
     popup
     fuzzy
     flymake-cursor
     ido-ubiquitous
     zenburn-theme
-    slime
-    slime-repl
     quack
     clojure-mode
     markdown-mode
@@ -181,14 +178,11 @@
         (add-to-list 'load-path name)))))
 
 (load-theme 'zenburn t)
-
-(auto-compile-on-save-mode 1)
-(auto-compile-on-load-mode 1)
 (ido-ubiquitous-mode 1)
 
 ;; smex
 (require 'smex)
-(setq-default smex-save-file (concat user-emacs-directory ".smex-items"))
+(setq-default smex-save-file (concat user-emacs-directory "smex-items"))
 (smex-initialize)
 
 (require 'auto-complete-config)
@@ -259,6 +253,7 @@
 ;; nREPL
 (add-hook 'nrepl-mode-hook 'subword-mode)
 (add-hook 'nrepl-interaction-mode-hook 'nrepl-turn-on-eldoc-mode)
+
 (setq nrepl-history-file "~/.emacs.d/nrepl-history")
 (setq nrepl-hide-special-buffers t)
 (setq nrepl-popup-stacktraces nil)
