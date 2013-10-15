@@ -297,6 +297,7 @@
 (add-hook 'js-mode-hook 'subword-mode)
 (add-hook 'js-mode-hook (lambda () (flymake-mode 1)))
 (rename-modeline "js-mode" javascript-mode "JS")
+(add-to-list 'auto-mode-alist '("\\.avsc$" . javascript-mode))
 
 ;; Python
 (setq py-install-directory "~/.emacs.d/vendor/python-mode/")
