@@ -161,7 +161,8 @@
     smex
     csharp-mode
     php-mode
-    haskell-mode)
+    haskell-mode
+    web-mode)
   "A list of packages to ensure are installed at launch.")
 
 (dolist (p my-packages)
@@ -275,9 +276,10 @@
 (add-to-list 'auto-mode-alist '("\\.xtm$" . extempore-mode))
 
 ;; HTML
-(add-to-list 'auto-mode-alist '("\\.aspx$'" . html-mode))
-(add-to-list 'auto-mode-alist '("\\.tmpl$'" . html-mode))
-(add-to-list 'auto-mode-alist '("\\.jt$'" . html-mode))
+(add-to-list 'auto-mode-alist '("\\.aspx$'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.tmpl$'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.jt$'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.html$'" . web-mode))
 
 ;; Markdown
 (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
