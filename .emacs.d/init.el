@@ -42,7 +42,6 @@
  backup-directory-alist `(("." . ,(concat user-emacs-directory
                                           "backups")))
  auto-save-file-name-transforms `((".*" ,temporary-file-directory t))
- auto-fill-mode -1
  indent-tabs-mode nil
  tab-width 8
  global-auto-revert-mode t)
@@ -183,7 +182,7 @@
 
 ;; smex
 (require 'smex)
-(setq-default smex-save-file (concat user-emacs-directory "smex-items"))
+(setq smex-save-file (concat user-emacs-directory "smex-items"))
 (smex-initialize)
 
 (require 'auto-complete-config)
@@ -340,4 +339,4 @@
   (interactive)
   (erc-tls :server "irc.freenode.net" :port 7000 :nick "cata"))
 
-(load-file "~/.emacs.d/bindings/bindings-general.elc")
+(load-file "~/.emacs.d/bindings/bindings-general.el")
