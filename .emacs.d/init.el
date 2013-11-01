@@ -136,7 +136,7 @@
 ;; elpa packages
 (require 'package)
 (setq package-archives
-      '(
+      '(("melpa" . "http://melpa.milkbox.net/packages/")
         ("marmalade" . "http://marmalade-repo.org/packages/")
 	("gnu" . "http://elpa.gnu.org/packages/")))
 (package-initialize)
@@ -153,6 +153,8 @@
     ido-ubiquitous
     zenburn-theme
     quack
+    git-commit-mode
+    git-rebase-mode
     clojure-mode
     markdown-mode
     nginx-mode
