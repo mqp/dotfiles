@@ -1,0 +1,15 @@
+-- Print time taken after queries
+\timing
+
+-- Convert weird character sets to UTF-8 for output
+\encoding unicode
+
+-- Display "NULL" for null fields in output
+\pset null 'NULL'
+
+-- More helpful errors
+\set VERBOSITY verbose
+
+-- Colored prompt with hostname
+\set PROMPT1 '%[%033[0;36;29m%]%n@%m:%/%[%033[0m%]%# '
+\set PROMPT2 '%# '
