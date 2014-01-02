@@ -158,6 +158,7 @@
     clojure-mode
     markdown-mode
     nginx-mode
+    scss-mode
     nrepl
     smex
     csharp-mode
@@ -281,6 +282,7 @@
 (add-to-list 'auto-mode-alist '("\\.tmpl$'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.jt$'" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.html$'" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.scss$'" . scss-mode))
 
 ;; Markdown
 (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
