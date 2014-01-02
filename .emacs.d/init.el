@@ -146,6 +146,7 @@
 
 (defvar my-packages
   '(auto-complete
+    cider
     ac-nrepl
     popup
     fuzzy
@@ -259,19 +260,22 @@
 
 (setq nrepl-history-file "~/.emacs.d/nrepl-history")
 (setq nrepl-hide-special-buffers t)
-(setq nrepl-popup-stacktraces nil)
-(setq nrepl-popup-stacktraces-in-repl nil)
+(setq nrepl-popup-stacktraces t)
+(setq nrepl-popup-stacktraces-in-repl t)
 (add-to-list 'same-window-buffer-names "*nrepl*")
 
-(dolist (hook '(nrepl-mode-hook nrepl-interaction-mode-hook))
+(require 'ac-nrepl)
+(dolist (hook '(cider-mode-hook cider-repl-mode-hook))
   (add-hook hook 'ac-nrepl-setup)
-  (add-hook hook 'set-auto-complete-as-completion-at-point-function)
-  (add-hook hook 'auto-complete-mode))
+  (add-hook hook 'set-auto-complete-as-completion-at-point-function))
 
-(eval-after-load "nrepl"
+(require 'auto-complete)
+(add-to-list 'ac-modes 'cider-repl-mode)
+
+(eval-after-load "cider"
   '(progn
-     (define-key nrepl-mode-map (kbd "C-c C-d") 'ac-nrepl-popup-doc)
-     (define-key nrepl-interaction-mode-map (kbd "C-c C-d") 'ac-nrepl-popup-doc)))
+     (define-key cider-mode-map (kbd "C-c C-d") 'ac-nrepl-popup-doc)
+     (define-key cider-repl-mode-map (kbd "C-c C-d") 'ac-nrepl-popup-doc)))
 
 ;; Extempore
 (autoload 'extempore-mode "~/.emacs.d/vendor/extempore-mode/extempore.el" "" t)
