@@ -282,11 +282,11 @@
 (add-to-list 'auto-mode-alist '("\\.xtm$" . extempore-mode))
 
 ;; HTML
-(add-to-list 'auto-mode-alist '("\\.aspx$'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.tmpl$'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.jt$'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.html$'" . web-mode))
-(add-to-list 'auto-mode-alist '("\\.scss$'" . scss-mode))
+(add-to-list 'auto-mode-alist '("\\.aspx$" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.tmpl$" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.jt$" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.html$" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.scss$" . scss-mode))
 
 ;; Markdown
 (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
