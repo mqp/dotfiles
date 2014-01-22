@@ -297,6 +297,10 @@
 ;; PHP
 (add-to-list 'auto-mode-alist '("\\.\\(php\\|inc\\)$" . php-mode))
 
+;; Smali
+(require 'smali-mode)
+(add-to-list 'auto-mode-alist '("\\.smali$" . smali-mode))
+
 ;; Javascript
 (require 'flymake-node-jshint)
 (autoload 'fn-mode "~/.emacs.d/vendor/fn-mode/fn-mode.el" t)
