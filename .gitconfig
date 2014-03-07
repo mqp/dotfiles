@@ -8,6 +8,7 @@
     history = log --graph --pretty=format:'%C(bold blue)<%an> %Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
     whatis = show -s --pretty='tformat:%h (%s, %ad)' --date=short
     new = !sh -c 'git log $1@{1}..$1@{0} "$@"'
+    tidybranches = "!f() { git checkout --quiet master && git branch --merged | grep --invert-match '\\*' | xargs -n 1 git branch --delete; git checkout --quiet @{-1}; }; f"
 [user]
     email = mquander@gmail.com
     name = maugrim
