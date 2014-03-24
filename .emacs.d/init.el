@@ -42,6 +42,7 @@
  backup-directory-alist `(("." . ,(concat user-emacs-directory
                                           "backups")))
  auto-save-file-name-transforms `((".*" ,temporary-file-directory t))
+ create-lockfiles nil
  indent-tabs-mode nil
  tab-width 8
  global-auto-revert-mode t)
