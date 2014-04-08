@@ -290,6 +290,7 @@
 (add-to-list 'auto-mode-alist '("\\.scss$" . scss-mode))
 
 ;; Markdown
+(add-to-list 'auto-mode-alist '("README\\.md\\'" . gfm-mode))
 (add-to-list 'auto-mode-alist '("\\.md$" . markdown-mode))
 
 ;; C#
