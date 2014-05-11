@@ -18,3 +18,4 @@
 .emacs.d/url/
 .emacs.d/session*
 .httpie/sessions
+.lein/self-installs
