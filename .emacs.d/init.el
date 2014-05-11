@@ -15,7 +15,7 @@
             (replace-regexp-in-string
              (concat "/home/" user-login-name) "~" buffer-file-name)
           "%b")))
-(set-frame-font "Consolas-13")
+(set-frame-font "Consolas-11")
 
 (set-terminal-coding-system 'utf-8)
 (set-keyboard-coding-system 'utf-8)
