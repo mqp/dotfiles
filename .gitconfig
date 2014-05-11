@@ -10,7 +10,7 @@
     new = !sh -c 'git log $1@{1}..$1@{0} "$@"'
     tidybranches = "!f() { git checkout --quiet master && git branch --merged | grep --invert-match '\\*' | xargs -n 1 git branch --delete; git checkout --quiet @{-1}; }; f"
 [user]
-    email = mquander@gmail.com
+    email = marshall@quander.me
     name = maugrim
 [rerere]
     enabled = True
