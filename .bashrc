@@ -47,6 +47,7 @@ function parse_git_directory {
 
 # export all these for subshells
 export -f parse_git_branch parse_git_status parse_git_directory we_are_in_git_work_tree
+
 export TERM="xterm-256color"
 export PS1='\[\033]0;\u@\h: \w\007\]\[\033[01;36m\]\h\[\033[00m\]:\[\033[01;34m\]$(parse_git_status)$(parse_git_directory)$(parse_git_branch)\[\033[00m\]$(optional_git_separator)\[\033[01;31m\]\W\[\033[00m\]\$ '
 export EDITOR=emacsclient VISUAL=emacsclient ALTERNATE_EDITOR=emacs
@@ -54,8 +55,12 @@ export HISTCONTROL=ignoredups
 export HISTSIZE=1000
 export HISTFILESIZE=2000
 export PATH=$PATH:$HOME/bin
+
+# address problems with Gnome apps
+# http://debbugs.gnu.org/cgi/bugreport.cgi?bug=15154#11
+export NO_AT_BRIDGE=1
+
 shopt -s checkwinsize
 shopt -s histappend
 alias ls="ls -h --color=auto"
-alias emacs="emacsclient -c"
 eval `dircolors ~/.dircolors`
