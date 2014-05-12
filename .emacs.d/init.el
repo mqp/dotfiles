@@ -173,7 +173,7 @@
   (when (not (package-installed-p p))
     (package-install p)))
 
-(let ((base "~/.emacs.d/vendor"))
+(let ((base (concat user-emacs-directory "vendor")))
   (add-to-list 'load-path base)
   (dolist (f (directory-files base))
     (let ((name (concat base "/" f)))
@@ -200,7 +200,7 @@
  ac-quick-help-delay 0.2)
 (ac-set-trigger-key "TAB")
 (define-key ac-completing-map "\M-/" 'ac-stop)
-(add-to-list 'ac-dictionary-directories "~/.emacs.d/ac-dict")
+(add-to-list 'ac-dictionary-directories (concat user-emacs-directory "ac-dict"))
 (add-hook 'emacs-lisp-mode-hook 'auto-complete-mode)
 (add-hook 'clojure-mode-hook 'auto-complete-mode)
 
@@ -259,7 +259,7 @@
 (add-hook 'nrepl-mode-hook 'subword-mode)
 (add-hook 'nrepl-interaction-mode-hook 'nrepl-turn-on-eldoc-mode)
 
-(setq nrepl-history-file "~/.emacs.d/nrepl-history")
+(setq nrepl-history-file (concat user-emacs-directory "nrepl-history"))
 (setq nrepl-hide-special-buffers t)
 (setq nrepl-popup-stacktraces t)
 (setq nrepl-popup-stacktraces-in-repl t)
@@ -279,7 +279,7 @@
      (define-key cider-repl-mode-map (kbd "C-c C-d") 'ac-nrepl-popup-doc)))
 
 ;; Extempore
-(autoload 'extempore-mode "~/.emacs.d/vendor/extempore-mode/extempore.el" "" t)
+(autoload 'extempore-mode (concat user-emacs-directory "vendor/extempore-mode/extempore.el"))
 (add-to-list 'auto-mode-alist '("\\.xtm$" . extempore-mode))
 
 ;; HTML
@@ -305,7 +305,7 @@
 
 ;; Javascript
 (require 'flymake-node-jshint)
-(autoload 'fn-mode "~/.emacs.d/vendor/fn-mode/fn-mode.el" t)
+(autoload 'fn-mode (concat user-emacs-directory "vendor/fn-mode/fn-mode.el"))
 (add-hook 'js-mode-hook 'fn-mode)
 (add-hook 'js-mode-hook 'subword-mode)
 (add-hook 'js-mode-hook (lambda () (flymake-mode 1)))
@@ -313,7 +313,7 @@
 (add-to-list 'auto-mode-alist '("\\.avsc$" . javascript-mode))
 
 ;; Python
-(setq py-install-directory "~/.emacs.d/vendor/python-mode/")
+(setq py-install-directory (concat user-emacs-directory "vendor/python-mode/"))
 (setq py-shell-name "ipython")
 
 ;; Haskell
@@ -353,4 +353,4 @@
   (interactive)
   (erc-tls :server "irc.freenode.net" :port 7000 :nick "cata"))
 
-(load-file "~/.emacs.d/bindings/bindings-general.el")
+(load-file (concat user-emacs-directory "bindings/bindings-general.el"))
