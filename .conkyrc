@@ -1,0 +1,65 @@
+background yes
+use_xft yes
+xftfont Sans:size=8
+xftalpha 1
+update_interval 5.0
+total_run_times 0
+own_window yes
+own_window_transparent yes
+own_window_type dock
+own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager
+double_buffer yes
+minimum_size 200 250
+maximum_width 200
+draw_shades yes
+draw_outline no
+draw_borders no
+draw_graph_borders yes
+default_color white
+default_shade_color black
+default_outline_color white
+alignment bottom_right
+gap_x 1708
+gap_y 550
+no_buffers yes
+uppercase no
+cpu_avg_samples 2
+override_utf8_locale no
+
+TEXT
+${font sans-serif:bold:size=8}SYSTEM ${hr 2}
+${font sans-serif:normal:size=8}$sysname $kernel $alignr $machine
+Host:$alignr$nodename
+Uptime:$alignr$uptime
+${if_existing /sys/class/power_supply/BAT0}
+${font sans-serif:bold:size=8}BATTERY ${hr 2}
+${font sans-serif:size=8}${battery_time BAT1} $alignr${battery_percent BAT1}%
+${battery_bar BAT1}
+${font sans-serif:size=8}${battery_time BAT0} $alignr${battery_percent BAT0}%
+${battery_bar BAT0}
+${endif}
+${font sans-serif:bold:size=8}PROCESSORS ${hr 2}
+${font sans-serif:normal:size=8}CPU0: ${cpu cpu0}% ${cpubar cpu0}
+CPU1: ${cpu cpu1}% ${cpubar cpu1}
+CPU2: ${cpu cpu2}% ${cpubar cpu2}
+CPU3: ${cpu cpu3}% ${cpubar cpu3}
+
+${font sans-serif:bold:size=8}MEMORY ${hr 2}
+${font sans-serif:normal:size=8}RAM $alignc $mem / $memmax $alignr $memperc%
+$membar
+SWAP $alignc ${swap} / ${swapmax} $alignr ${swapperc}%
+${swapbar}
+
+${font sans-serif:bold:size=8}DISK ${hr 2}
+${font sans-serif:normal:size=8}/ $alignc ${fs_used /} / ${fs_size /} $alignr ${fs_used_perc /}%
+${fs_bar /}
+
+${font sans-serif:bold:size=8}NETWORK ${hr 2}
+${font sans-serif:normal:size=8}IP address: $alignr ${addr wlan0}
+${font sans-serif:normal:size=8}External IP: $alignr ${execi 3600 curl ifconfig.me/ip}
+ESSID: $alignr ${wireless_essid wlan0}
+Connection quality: $alignr ${wireless_link_qual_perc wlan0}%
+${downspeedgraph wlan0 F57900 FCAF3E}
+Incoming: ${downspeed wlan0}/s $alignr total: ${totaldown wlan0}
+${upspeedgraph wlan0 F57900 FCAF3E}
+Outgoing: ${upspeed wlan0}/s $alignr total: ${totalup wlan0}
