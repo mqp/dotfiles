@@ -163,6 +163,7 @@
     scss-mode
     nrepl
     smex
+    json-mode
     csharp-mode
     php-mode
     haskell-mode
