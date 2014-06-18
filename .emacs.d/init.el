@@ -157,6 +157,8 @@
     quack
     git-commit-mode
     git-rebase-mode
+    gitignore-mode
+    gitconfig-mode
     clojure-mode
     markdown-mode
     nginx-mode
