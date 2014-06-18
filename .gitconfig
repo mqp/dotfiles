@@ -1,18 +1,18 @@
 [push]
-    default = current
+	default = current
 [color]
-    ui = True
+	ui = True
 [pack]
-    threads = 0
+	threads = 0
 [alias]
-    history = log --graph --pretty=format:'%C(bold blue)<%an> %Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
-    whatis = show -s --pretty='tformat:%h (%s, %ad)' --date=short
-    new = !sh -c 'git log $1@{1}..$1@{0} "$@"'
-    tidybranches = "!f() { git checkout --quiet master && git branch --merged | grep --invert-match '\\*' | xargs -n 1 git branch --delete; git checkout --quiet @{-1}; }; f"
+	history = log --graph --pretty=format:'%C(bold blue)<%an> %Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+	whatis = show -s --pretty='tformat:%h (%s, %ad)' --date=short
+	new = !sh -c 'git log $1@{1}..$1@{0} "$@"'
+	tidybranches = "!f() { git checkout --quiet master && git branch --merged | grep --invert-match '\\*' | xargs -n 1 git branch --delete; git checkout --quiet @{-1}; }; f"
 [user]
-    email = marshall@quander.me
-    name = maugrim
+	email = marshall@quander.me
+	name = maugrim
 [rerere]
-    enabled = True
+	enabled = True
 [merge]
 	conflictstyle = diff3
