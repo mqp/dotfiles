@@ -68,6 +68,9 @@
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (add-hook 'comint-exec-hook 'set-background-process)
 
+(require 'eldoc)
+(setq eldoc-idle-delay 0)
+
 (require 'ido)
 (setq
  ido-max-directory-size 100000
@@ -147,8 +150,8 @@
 
 (defvar my-packages
   '(auto-complete
-    cider
     ac-nrepl
+    cider
     popup
     fuzzy
     flymake-cursor
@@ -163,7 +166,6 @@
     markdown-mode
     nginx-mode
     scss-mode
-    nrepl
     smex
     json-mode
     csharp-mode
@@ -251,6 +253,9 @@
 (add-hook 'clojure-mode-hook 'subword-mode)
 (rename-modeline "clojure-mode" clojure-mode "Clj")
 
+(add-hook 'cider-repl-mode-hook 'turn-on-eldoc-mode)
+(add-hook 'cider-repl-mode-hook 'subword-mode)
+
 ;; adjust indents for core.logic macros
 (eval-after-load "clojure-mode"
   '(progn
@@ -258,15 +263,10 @@
      (put-clojure-indent 'run 'defun)
      (put-clojure-indent 'fresh 'defun)))
 
-;; nREPL
-(add-hook 'nrepl-mode-hook 'subword-mode)
-(add-hook 'nrepl-interaction-mode-hook 'nrepl-turn-on-eldoc-mode)
-
-(setq nrepl-history-file (concat user-emacs-directory "nrepl-history"))
 (setq nrepl-hide-special-buffers t)
-(setq nrepl-popup-stacktraces t)
-(setq nrepl-popup-stacktraces-in-repl t)
-(add-to-list 'same-window-buffer-names "*nrepl*")
+(setq cider-show-error-buffer t)
+(setq cider-repl-history-file (concat user-emacs-directory "cider-history"))
+(setq cider-repl-use-pretty-printing t)
 
 (require 'ac-nrepl)
 (dolist (hook '(cider-mode-hook cider-repl-mode-hook))
