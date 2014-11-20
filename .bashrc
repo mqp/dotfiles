@@ -55,6 +55,9 @@ export HISTCONTROL=ignoredups
 export HISTSIZE=1000
 export HISTFILESIZE=2000
 export PATH=$PATH:$HOME/bin
+export GRADLE_OPTS="-Dorg.gradle.daemon=true -Dorg.gradle.parallel=true"
+export JAVA_OPTS="-Xms128m -Xmx16384m"
+export BOTO_CONFIG="~/.aws/config"
 
 # address problems with Gnome apps
 # http://debbugs.gnu.org/cgi/bugreport.cgi?bug=15154#11
