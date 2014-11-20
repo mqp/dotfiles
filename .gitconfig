@@ -5,10 +5,12 @@
 [pack]
 	threads = 0
 [alias]
-	history = log --graph --pretty=format:'%C(bold blue)<%an> %Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
+	done = !git checkout master && git pull --rebase && git merge --no-ff @{-1} && git push
+	history = log --no-merges --pretty=format:'%C(bold blue)<%an> %Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%Creset' --abbrev-commit --date=relative
 	whatis = show -s --pretty='tformat:%h (%s, %ad)' --date=short
+	back = checkout "@{-1}"
 	new = !sh -c 'git log $1@{1}..$1@{0} "$@"'
-	tidybranches = "!f() { git checkout --quiet master && git branch --merged | grep --invert-match '\\*' | xargs -n 1 git branch --delete; git checkout --quiet @{-1}; }; f"
+	tidybranches = "!f() { git checkout --quiet master && git branch --merged | grep --invert-match '\\*' | xargs -n 1 git branch --delete; git checkout --quiet @{-1}; git remote prune origin; }; f"
 [user]
 	email = marshall@quander.me
 	name = maugrim
