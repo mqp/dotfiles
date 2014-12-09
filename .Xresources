@@ -21,6 +21,11 @@ URxvt*.scrollBar: false
 URxvt*.saveLines: 10000
 URxvt*.termName: screen-256color
 
+URxvt*.perl-ext-common: clipboard
+URxvt*.keysym.C-y: perl:clipboard:paste
+URxvt*.keysym.M-w: perl:clipboard:copy
+URxvt*.keysym.C-w: perl:clipboard:copy
+
 *foreground: #FFFFFF
 *background: #000010
 
