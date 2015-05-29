@@ -141,8 +141,8 @@
 ;; elpa packages
 (require 'package)
 (setq package-archives
-      '(("melpa" . "http://melpa.milkbox.net/packages/")
-        ("marmalade" . "http://marmalade-repo.org/packages/")
+      '(("melpa-stable" . "http://stable.melpa.org/packages/")
+        ("melpa-unstable" . "http://melpa.org/packages/")
 	("gnu" . "http://elpa.gnu.org/packages/")))
 (package-initialize)
 
@@ -151,14 +151,12 @@
 
 (defvar my-packages
   '(auto-complete
-    ac-nrepl
+    ac-cider
     cider
     popup
     fuzzy
-    flymake-cursor
     ido-ubiquitous
     zenburn-theme
-    quack
     git-commit-mode
     git-rebase-mode
     gitignore-mode
@@ -270,13 +268,13 @@
 (setq cider-repl-history-file (concat user-emacs-directory "cider-history"))
 (setq cider-repl-use-pretty-printing t)
 
-(require 'ac-nrepl)
-(dolist (hook '(cider-mode-hook cider-repl-mode-hook))
-  (add-hook hook 'ac-nrepl-setup)
-  (add-hook hook 'set-auto-complete-as-completion-at-point-function))
-
-(require 'auto-complete)
-(add-to-list 'ac-modes 'cider-repl-mode)
+(require 'ac-cider)
+(add-hook 'cider-mode-hook 'ac-flyspell-workaround)
+(add-hook 'cider-mode-hook 'ac-cider-setup)
+(add-hook 'cider-mode-hook 'set-auto-complete-as-completion-at-point-function)
+(add-hook 'cider-repl-mode-hook 'ac-cider-setup)
+(eval-after-load "auto-complete"
+  '(add-to-list 'ac-modes 'cider-mode))
 
 (eval-after-load "cider"
   '(progn
