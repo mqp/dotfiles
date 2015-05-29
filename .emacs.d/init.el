@@ -172,7 +172,8 @@
     csharp-mode
     php-mode
     haskell-mode
-    web-mode)
+    web-mode
+    dockerfile-mode)
   "A list of packages to ensure are installed at launch.")
 
 (dolist (p my-packages)
@@ -306,6 +307,9 @@
 ;; Smali
 (require 'smali-mode)
 (add-to-list 'auto-mode-alist '("\\.smali$" . smali-mode))
+
+;; Docker
+(add-to-list 'auto-mode-alist '("Dockerfile" . dockerfile-mode))
 
 ;; Javascript
 (require 'flymake-node-jshint)
