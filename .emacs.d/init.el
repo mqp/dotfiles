@@ -100,16 +100,16 @@
 (require 'recentf)
 (setq-default
  recentf-max-saved-items 500
- recentf-max-menu-items 15)
- recentf-save-file (concat user-emacs-directory "recentf")
+ recentf-max-menu-items 15
+ recentf-save-file (concat user-emacs-directory "recentf"))
 (recentf-mode 1)
 
 ;; savehist keeps track of some history
 (require 'savehist)
 (setq-default
  savehist-additional-variables '(search ring regexp-search-ring)
- savehist-autosave-interval 60)
- savehist-file (concat user-emacs-directory "savehist")
+ savehist-autosave-interval 60
+ savehist-file (concat user-emacs-directory "savehist"))
 (savehist-mode 1)
 
 (require 'paren)
