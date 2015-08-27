@@ -45,7 +45,9 @@
  create-lockfiles nil
  indent-tabs-mode nil
  tab-width 8
- global-auto-revert-mode t)
+ fill-column 100
+ global-auto-revert-mode t
+ fit-window-to-buffer-horizontally "only")
 
 (add-to-list 'backup-directory-alist (cons tramp-file-name-regexp nil))
 
