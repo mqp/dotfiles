@@ -57,7 +57,6 @@
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
-(add-hook 'text-mode-hook 'variable-pitch-mode)
 (add-hook 'prog-mode-hook 'linum-mode)
 (add-hook 'prog-mode-hook 'electric-pair-mode)
 (add-hook 'prog-mode-hook 'electric-indent-mode)
