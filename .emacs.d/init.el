@@ -119,20 +119,6 @@
 
 (add-to-list 'auto-mode-alist '("\\.zsh\\'" . shell-script-mode))
 
-(defun pretty-lambdas ()
-  (font-lock-add-keywords
-   nil `(("(\\(lambda\\>\\)"
-          (0 (progn (compose-region (match-beginning 1) (match-end 1)
-                                    ,(make-char 'greek-iso8859-7 107))
-                    nil))))))
-
-(defun pretty-fn ()
-  (font-lock-add-keywords
-   nil `(("(\\(\\<fn\\>\\)"
-	  (0 (progn (compose-region (match-beginning 1) (match-end 1)
-				    "\u0192"
-				    'decompose-region)))))))
-
 ;; Emacs Lisp
 (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
 (add-hook 'lisp-interaction-mode-hook 'pretty-lambdas)
@@ -155,11 +141,11 @@
     ac-cider
     cider
     popup
+    flycheck
     fuzzy
     ido-ubiquitous
     zenburn-theme
-    git-commit-mode
-    git-rebase-mode
+    magit
     gitignore-mode
     gitconfig-mode
     clojure-mode
@@ -243,16 +229,18 @@
 				    "\u0192"
 				    'decompose-region)))))))
 
-(defmacro rename-modeline (package-name mode new-name)
-  `(eval-after-load ,package-name
-     '(defadvice ,mode (after rename-modeline activate)
-        (setq mode-name ,new-name))))
+;; kill weird comma on modeline when in subword-mode
+(let ((entry (assq 'subword-mode minor-mode-alist)))
+  (when entry (setcdr entry '(nil))))
+
+;; Flycheck
+(require 'flycheck)
+(add-hook 'after-init-hook #'global-flycheck-mode)
 
 ;; Clojure
 (add-hook 'clojure-mode-hook 'turn-on-eldoc-mode)
 (add-hook 'clojure-mode-hook 'pretty-fn)
 (add-hook 'clojure-mode-hook 'subword-mode)
-(rename-modeline "clojure-mode" clojure-mode "Clj")
 
 (add-hook 'cider-repl-mode-hook 'turn-on-eldoc-mode)
 (add-hook 'cider-repl-mode-hook 'subword-mode)
