@@ -45,7 +45,7 @@
  create-lockfiles nil
  indent-tabs-mode nil
  tab-width 8
- fill-column 100
+ fill-column 120
  global-auto-revert-mode t
  fit-window-to-buffer-horizontally "only")
 
