@@ -288,6 +288,12 @@
 (add-to-list 'auto-mode-alist '("\\.xtm$" . extempore-mode))
 
 ;; HTML
+(defun web-mode-indent-hook ()
+  ;; adjust indents for web-mode to 2 spaces
+  (setq web-mode-markup-indent-offset 4)
+  (setq web-mode-css-indent-offset 4))
+(add-hook 'web-mode-hook 'web-mode-indent-hook)
+
 (add-to-list 'auto-mode-alist '("\\.aspx$" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.tmpl$" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.jt$" . web-mode))
@@ -312,13 +318,25 @@
 (add-to-list 'auto-mode-alist '("Dockerfile" . dockerfile-mode))
 
 ;; Javascript
-(require 'flymake-node-jshint)
 (autoload 'fn-mode (concat user-emacs-directory "vendor/fn-mode/fn-mode.el"))
 (add-hook 'js-mode-hook 'fn-mode)
 (add-hook 'js-mode-hook 'subword-mode)
-(add-hook 'js-mode-hook (lambda () (flymake-mode 1)))
-(rename-modeline "js-mode" javascript-mode "JS")
 (add-to-list 'auto-mode-alist '("\\.avsc$" . javascript-mode))
+(add-to-list 'auto-mode-alist '("\\.jsx$" . web-mode))
+(add-to-list 'auto-mode-alist '("\\.sps$" . json-mode))
+
+;; disable jshint since we prefer eslint checking
+(setq-default flycheck-disabled-checkers
+  (append flycheck-disabled-checkers
+    '(javascript-jshint)))
+
+;; use eslint with web-mode for jsx files
+(flycheck-add-mode 'javascript-eslint 'web-mode)
+
+;; disable json-jsonlist checking for json files
+(setq-default flycheck-disabled-checkers
+  (append flycheck-disabled-checkers
+    '(json-jsonlist)))
 
 ;; Python
 (setq py-install-directory (concat user-emacs-directory "vendor/python-mode/"))
