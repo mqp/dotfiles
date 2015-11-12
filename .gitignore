@@ -9,6 +9,7 @@
 .emacs.d/eshell/lastdir
 .emacs.d/smex-items
 .emacs.d/recentf
+.emacs.d/savehist
 .emacs.d/history
 .emacs.d/ido.hist
 .emacs.d/nrepl-history

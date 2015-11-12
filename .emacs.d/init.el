@@ -3,6 +3,9 @@
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 
+(add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
+(load-theme 'zenburn t)
+
 ;; work around a bug where system-name is FQDN on OS X
 (if (eq system-type 'darwin)
     (setq system-name (car (split-string system-name "\\."))))
@@ -38,9 +41,7 @@
  mouse-yank-at-point t
  vc-make-backup-files t
  custom-file (concat user-emacs-directory "custom.el")
- package-user-dir (concat user-emacs-directory "elpa")
- backup-directory-alist `(("." . ,(concat user-emacs-directory
-                                          "backups")))
+ backup-directory-alist `(("." . ,(concat user-emacs-directory "backups")))
  auto-save-file-name-transforms `((".*" ,temporary-file-directory t))
  create-lockfiles nil
  indent-tabs-mode nil
@@ -49,13 +50,25 @@
  global-auto-revert-mode t
  fit-window-to-buffer-horizontally "only")
 
+(defvar local-packages-path (concat user-emacs-directory "vendor"))
+(let ((base local-packages-path))
+  (add-to-list 'load-path base)
+  (dolist (f (directory-files base))
+    (let ((name (concat base "/" f)))
+      (when (and (file-directory-p name)
+                 (not (equal f ".."))
+                 (not (equal f ".")))
+        (add-to-list 'load-path name)))))
+
+(load-file (concat user-emacs-directory "utils.el"))
+(load-file (concat user-emacs-directory "dependencies.el"))
+(dependencies-initialize)
+
 (add-to-list 'backup-directory-alist (cons tramp-file-name-regexp nil))
 
 ;; hippie-expand: at times perhaps too hip
 (delete 'try-expand-line hippie-expand-try-functions-list)
 (delete 'try-expand-list hippie-expand-try-functions-list)
-
-(defalias 'yes-or-no-p 'y-or-n-p)
 
 (add-hook 'prog-mode-hook 'linum-mode)
 (add-hook 'prog-mode-hook 'electric-pair-mode)
@@ -125,57 +138,10 @@
 (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
 (add-hook 'emacs-lisp-mode-hook 'pretty-lambdas)
 
-;; elpa packages
-(require 'package)
-(setq package-archives
-      '(("melpa-stable" . "http://stable.melpa.org/packages/")
-        ("melpa-unstable" . "http://melpa.org/packages/")
-	("gnu" . "http://elpa.gnu.org/packages/")))
-(package-initialize)
-
-(when (not package-archive-contents)
-  (package-refresh-contents))
-
-(defvar my-packages
-  '(auto-complete
-    ac-cider
-    cider
-    popup
-    flycheck
-    fuzzy
-    ido-ubiquitous
-    zenburn-theme
-    magit
-    gitignore-mode
-    gitconfig-mode
-    clojure-mode
-    markdown-mode
-    nginx-mode
-    scss-mode
-    smex
-    json-mode
-    csharp-mode
-    php-mode
-    haskell-mode
-    web-mode
-    dockerfile-mode)
-  "A list of packages to ensure are installed at launch.")
-
-(dolist (p my-packages)
-  (when (not (package-installed-p p))
-    (package-install p)))
-
-(let ((base (concat user-emacs-directory "vendor")))
-  (add-to-list 'load-path base)
-  (dolist (f (directory-files base))
-    (let ((name (concat base "/" f)))
-      (when (and (file-directory-p name)
-                 (not (equal f ".."))
-                 (not (equal f ".")))
-        (add-to-list 'load-path name)))))
-
-(load-theme 'zenburn t)
 (ido-ubiquitous-mode 1)
+
+;; dash
+(eval-after-load "dash" '(dash-enable-font-lock))
 
 ;; smex
 (require 'smex)
@@ -201,34 +167,6 @@
   (setq completion-at-point-functions '(auto-complete)))
 (add-hook 'auto-complete-mode-hook 'set-auto-complete-as-completion-at-point-function)
 
-(defun revert-all-buffers ()
-  "Refreshes all open buffers from their respective files."
-  (interactive)
-  (dolist (buf (buffer-list))
-    (with-current-buffer buf
-      (when (and (buffer-file-name) (not (buffer-modified-p)))
-        (revert-buffer t t t))))
-  (message "Refreshed open files."))
-
-(defun kill-other-buffers ()
-  "Kill all buffers except the current buffer."
-  (interactive)
-  (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
-
-(defun pretty-lambdas ()
-  (font-lock-add-keywords
-   nil `(("(\\(lambda\\>\\)"
-          (0 (progn (compose-region (match-beginning 1) (match-end 1)
-                                    ,(make-char 'greek-iso8859-7 107))
-                    nil))))))
-
-(defun pretty-fn ()
-  (font-lock-add-keywords
-   nil `(("(\\(\\<fn\\>\\)"
-	  (0 (progn (compose-region (match-beginning 1) (match-end 1)
-				    "\u0192"
-				    'decompose-region)))))))
-
 ;; kill weird comma on modeline when in subword-mode
 (let ((entry (assq 'subword-mode minor-mode-alist)))
   (when entry (setcdr entry '(nil))))
@@ -252,34 +190,23 @@
      (put-clojure-indent 'run 'defun)
      (put-clojure-indent 'fresh 'defun)))
 
-(setq nrepl-hide-special-buffers t)
-(setq cider-show-error-buffer t)
-(setq cider-repl-history-file (concat user-emacs-directory "cider-history"))
-(setq cider-repl-use-pretty-printing t)
-
 (require 'ac-cider)
 (add-hook 'cider-mode-hook 'ac-flyspell-workaround)
 (add-hook 'cider-mode-hook 'ac-cider-setup)
 (add-hook 'cider-mode-hook 'set-auto-complete-as-completion-at-point-function)
 (add-hook 'cider-repl-mode-hook 'ac-cider-setup)
+
 (eval-after-load "auto-complete"
   '(add-to-list 'ac-modes 'cider-mode))
 
 (eval-after-load "cider"
   '(progn
+     (setq nrepl-hide-special-buffers t)
+     (setq cider-show-error-buffer t)
+     (setq cider-repl-history-file (concat user-emacs-directory "cider-history"))
+     (setq cider-repl-use-pretty-printing t)
      (define-key cider-mode-map (kbd "C-c C-d") 'ac-nrepl-popup-doc)
      (define-key cider-repl-mode-map (kbd "C-c C-d") 'ac-nrepl-popup-doc)))
-
-;; Extempore
-(autoload 'extempore-mode (concat user-emacs-directory "vendor/extempore-mode/extempore.el"))
-(add-to-list 'auto-mode-alist '("\\.xtm$" . extempore-mode))
-
-;; HTML
-(defun web-mode-indent-hook ()
-  ;; adjust indents for web-mode to 2 spaces
-  (setq web-mode-markup-indent-offset 4)
-  (setq web-mode-css-indent-offset 4))
-(add-hook 'web-mode-hook 'web-mode-indent-hook)
 
 (add-to-list 'auto-mode-alist '("\\.aspx$" . web-mode))
 (add-to-list 'auto-mode-alist '("\\.tmpl$" . web-mode))
@@ -296,10 +223,6 @@
 
 ;; PHP
 (add-to-list 'auto-mode-alist '("\\.\\(php\\|inc\\)$" . php-mode))
-
-;; Smali
-(require 'smali-mode)
-(add-to-list 'auto-mode-alist '("\\.smali$" . smali-mode))
 
 ;; Docker
 (add-to-list 'auto-mode-alist '("Dockerfile" . dockerfile-mode))
@@ -325,10 +248,6 @@
   (append flycheck-disabled-checkers
     '(json-jsonlist)))
 
-;; Python
-(setq py-install-directory (concat user-emacs-directory "vendor/python-mode/"))
-(setq py-shell-name "ipython")
-
 ;; Haskell
 (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
 (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)
@@ -346,8 +265,9 @@
                     (when (eq major-mode 'erc-mode)
                       (setq erc-fill-column (- (window-width w) 2)))))))))
 
-(setq erc-autojoin-channels-alist
-      '(("freenode.net" "#lesswrong" "#go" "#clojure" "#emacs")))
+(require 'erc)
+(require 'erc-services)
+(setq erc-autojoin-channels-alist '(("freenode.net" "#lesswrong" "#go" "#clojure" "#emacs")))
 (setq erc-autojoin-delay 1)
 (setq erc-email-userid "cata")
 (setq erc-modules '(autojoin button completion irccontrols list match menu move-to-prompt netsplit networks noncommands readonly ring scrolltobottom stamp track))
