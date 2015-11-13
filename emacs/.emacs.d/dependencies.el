@@ -18,6 +18,7 @@
     magit
     gitignore-mode
     gitconfig-mode
+    ssh-config-mode
     clojure-mode
     markdown-mode
     nginx-mode
