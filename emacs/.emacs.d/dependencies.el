@@ -1,6 +1,6 @@
 ;;; Code to load third-party dependencies (both from ELPA and the vendor directory.)
 (require 'package)
-(require 'dash)
+(require 'cl-macs)
 
 (defvar dependencies-archives
   '(("melpa-stable" . "http://stable.melpa.org/packages/")
@@ -29,13 +29,20 @@
     php-mode
     haskell-mode
     web-mode
-    dockerfile-mode))
+    dockerfile-mode
+    use-package))
+
+(defun dependencies-installed (packages)
+  (cl-loop for p in packages
+           when (not (package-installed-p p)) do (cl-return nil)
+           finally (cl-return t)))
 
 (defun dependencies-initialize ()
   "Install and initialize all dependencies, local and remote."
   (interactive)
 
   ;; set stuff up
+  (setq load-prefer-newer t)
   (setq package-archives dependencies-archives)
   (setq package-load-list '(all))
   (setq-default
@@ -43,11 +50,12 @@
    package-enable-at-startup nil)
   (package-initialize)
 
-  (unless (--all? (package-installed-p it) dependencies-packages)
+  (unless (dependencies-installed dependencies-packages)
     ;; check for new packages (package versions)
-    (message "%s" "Refreshing package database...")
+    (message "Refreshing package database...")
     (package-refresh-contents)
     ;; install the missing packages
     (dolist (p dependencies-packages)
       (unless (package-installed-p p))
-        (package-install p))))
+        (package-install p)))
+   (message "Dependencies up to date."))

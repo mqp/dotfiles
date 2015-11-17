@@ -1,3 +1,5 @@
+(require 'tls)
+
 (defun revert-all-buffers ()
   "Refreshes all open buffers from their respective files."
   (interactive)
@@ -11,6 +13,11 @@
   "Kill all buffers except the current buffer."
   (interactive)
   (mapc 'kill-buffer (delq (current-buffer) (buffer-list))))
+
+(defun erc-connect ()
+  "Connect to IRC."
+  (interactive)
+  (erc-tls :server "irc.freenode.net" :port 7000 :nick "cata"))
 
 (defun pretty-lambdas ()
   (font-lock-add-keywords
