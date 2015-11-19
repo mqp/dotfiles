@@ -236,9 +236,12 @@
 (use-package markdown-mode :mode (("\\.md$" . markdown-mode)
                                   ("README\\.md$" . gfm-mode)))
 
+(use-package fn-mode)
+
 (use-package web-mode
   :mode "\\.\\(jsx\\|tmpl\\|html\\)$"
   :config
+  (add-hook 'web-mode-hook 'fn-mode)
   (flycheck-add-mode 'javascript-eslint 'web-mode))
 
 (use-package json-mode
