@@ -166,6 +166,30 @@
   :config
   (global-flycheck-mode 1))
 
+;; hook AC into completion-at-point
+(defun set-auto-complete-as-completion-at-point-function ()
+  (setq completion-at-point-functions '(auto-complete)))
+
+(use-package auto-complete
+  :init
+  (setq-default
+   ac-auto-start nil
+   ac-auto-show-menu nil
+   ac-use-quick-help t
+   ac-use-menu-map t
+   ac-quick-help-delay 0.2
+   ac-modes '(clojure-mode cider-mode css-mode emacs-lisp-mode web-mode))
+  :config
+  (ac-config-default)
+  (ac-set-trigger-key "TAB")
+  (global-auto-complete-mode t)
+  (add-hook 'auto-complete-mode-hook 'set-auto-complete-as-completion-at-point-function))
+
+(use-package auto-complete-config
+  :config
+  (define-key ac-completing-map "\M-/" 'ac-stop)
+  (add-to-list 'ac-dictionary-directories (concat user-emacs-directory "ac-dict")))
+
 (use-package subword
   :defer t
   :diminish subword-mode)
@@ -180,33 +204,6 @@
   (put-clojure-indent 'run* 'defun)
   (put-clojure-indent 'run 'defun)
   (put-clojure-indent 'fresh 'defun))
-
-;; hook AC into completion-at-point
-(defun set-auto-complete-as-completion-at-point-function ()
-  (setq completion-at-point-functions '(auto-complete)))
-
-(use-package auto-complete
-  :defer t
-  :init
-  (setq-default
-   ac-auto-start nil
-   ac-auto-show-menu nil
-   ac-use-quick-help t
-   ac-use-menu-map t
-   ac-quick-help-delay 0.2)
-  :config
-  (ac-config-default)
-  (ac-set-trigger-key "TAB")
-  (add-to-list 'ac-modes 'cider-mode)
-  (add-hook 'emacs-lisp-mode-hook 'auto-complete-mode)
-  (add-hook 'clojure-mode-hook 'auto-complete-mode)
-  (add-hook 'auto-complete-mode-hook 'set-auto-complete-as-completion-at-point-function))
-
-(use-package auto-complete-config
-  :defer t
-  :config
-  (define-key ac-completing-map "\M-/" 'ac-stop)
-  (add-to-list 'ac-dictionary-directories (concat user-emacs-directory "ac-dict")))
 
 (use-package ac-cider
   :defer t
@@ -236,13 +233,21 @@
 (use-package markdown-mode :mode (("\\.md$" . markdown-mode)
                                   ("README\\.md$" . gfm-mode)))
 
-(use-package fn-mode)
+(use-package fn-mode :defer t :commands fn-mode)
+
+(use-package css-mode
+  :defer t
+  :config
+  (setq css-indent-offset 2))
 
 (use-package web-mode
-  :mode "\\.\\(jsx\\|tmpl\\|html\\)$"
+  :mode "\\.\\(jsx\\|html\\)$"
   :config
-  (add-hook 'web-mode-hook 'fn-mode)
-  (flycheck-add-mode 'javascript-eslint 'web-mode))
+  (setq web-mode-markup-indent-offset 2)
+  (setq web-mode-css-indent-offset 2)
+  (setq web-mode-ac-sources-alist
+        '(("css" . (ac-source-css-property))
+          ("html" . (ac-source-words-in-buffer ac-source-abbrev)))))
 
 (use-package json-mode
   :mode "\\.json$"
@@ -251,11 +256,11 @@
   (setq-default
    flycheck-disabled-checkers (append flycheck-disabled-checkers '(json-jsonlist))))
 
-(use-package js-mode
-  :defer t
+(use-package js2-mode
+  :mode "\\.js$"
   :config
-  (add-hook 'js-mode-hook 'fn-mode)
-  (add-hook 'js-mode-hook 'subword-mode)
+  (add-hook 'js2-mode-hook 'fn-mode)
+  (add-hook 'js2-mode-hook 'subword-mode)
   ;; disable jshint since we prefer eslint checking
   (setq-default
    flycheck-disabled-checkers (append flycheck-disabled-checkers '(javascript-jshint))))

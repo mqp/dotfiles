@@ -15,6 +15,7 @@
     flycheck
     fuzzy
     ido-ubiquitous
+    js2-mode
     magit
     gitignore-mode
     gitconfig-mode
@@ -38,7 +39,7 @@
            finally (cl-return t)))
 
 (defun dependencies-initialize ()
-  "Install and initialize all dependencies, local and remote."
+  "Install and initialize all dependencies."
   (interactive)
 
   ;; set stuff up
