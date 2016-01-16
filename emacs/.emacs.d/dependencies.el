@@ -22,6 +22,7 @@
     ssh-config-mode
     clojure-mode
     markdown-mode
+    lua-mode
     nginx-mode
     scss-mode
     smex
