@@ -230,6 +230,7 @@
 (use-package php-mode :mode "\\.\\(php\\|inc\\)$")
 (use-package scss-mode :mode "\\.scss$")
 (use-package csharp-mode :mode "\\.cs$")
+(use-package glsl-mode :mode "\\.\\(glsl\\|vert\\|frag\\)$")
 (use-package markdown-mode :mode (("\\.md$" . markdown-mode)
                                   ("README\\.md$" . gfm-mode)))
 

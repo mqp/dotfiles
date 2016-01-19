@@ -21,6 +21,7 @@
     gitconfig-mode
     ssh-config-mode
     clojure-mode
+    glsl-mode
     markdown-mode
     lua-mode
     nginx-mode
