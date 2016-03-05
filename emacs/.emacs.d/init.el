@@ -240,6 +240,10 @@
   :config
   (setq css-indent-offset 2))
 
+(use-package editorconfig
+  :config
+  (editorconfig-mode 1))
+
 (use-package web-mode
   :mode "\\.\\(jsx\\|html\\)$"
   :config

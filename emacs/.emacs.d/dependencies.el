@@ -27,6 +27,8 @@
     nginx-mode
     haml-mode
     feature-mode
+    editorconfig
+    powershell
     scss-mode
     smex
     json-mode
