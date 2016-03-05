@@ -25,6 +25,8 @@
     markdown-mode
     lua-mode
     nginx-mode
+    haml-mode
+    feature-mode
     scss-mode
     smex
     json-mode

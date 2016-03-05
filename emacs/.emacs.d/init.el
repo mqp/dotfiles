@@ -226,6 +226,7 @@
   (define-key cider-mode-map (kbd "C-c C-d") 'ac-nrepl-popup-doc)
   (define-key cider-repl-mode-map (kbd "C-c C-d") 'ac-nrepl-popup-doc))
 
+(use-package ruby-mode :mode "\\.\\(arb\\|rabl\\)$")
 (use-package dockerfile-mode :mode "Dockerfile")
 (use-package php-mode :mode "\\.\\(php\\|inc\\)$")
 (use-package scss-mode :mode "\\.scss$")
