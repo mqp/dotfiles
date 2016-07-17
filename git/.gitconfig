@@ -1,7 +1,7 @@
 [push]
 	default = current
-[color]
-	ui = True
+[pull]
+	rebase = preserve
 [pack]
 	threads = 0
 [alias]
