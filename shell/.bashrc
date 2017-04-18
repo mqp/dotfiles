@@ -1,45 +1,34 @@
-function we_are_in_git_work_tree {
-    git rev-parse --is-inside-work-tree &> /dev/null
-}
-
 function git_prompt {
-    if we_are_in_git_work_tree
+    local GITOUTPUT; GITOUTPUT=$(git rev-parse --show-toplevel --symbolic-full-name --abbrev-ref HEAD 2> /dev/null)
+    if [ $? -eq 0 ] # i.e. we are in a git repo
     then
-        echo -n "$(parse_git_status)$(parse_git_directory)$(parse_git_branch):"
-    fi
-}
-
-function parse_git_branch {
-    local BR=$(git rev-parse --symbolic-full-name --abbrev-ref HEAD 2> /dev/null)
-    if [ "$BR" == HEAD ]
-    then
-        local NM=$(git name-rev --name-only HEAD 2> /dev/null)
-        if [ "$NM" != undefined ]
-        then echo -n "@$NM)"
-        else echo -n "$(git rev-parse --short HEAD 2> /dev/null))"
+        IFS=$'\n'; DATA=($GITOUTPUT); unset IFS;
+        local GITPATH="${DATA[0]}"
+        local GITNAME="${GITPATH##*/}"
+        local GITBRANCH="${DATA[1]}"
+        if [ "$GITBRANCH" == HEAD ]
+        then
+            local NM=$(git name-rev --name-only HEAD 2> /dev/null)
+            if [ "$NM" != undefined ]
+            then echo -n "($GITNAME/@$NM):"
+            else echo -n "($GITNAME/$(git rev-parse --short HEAD 2> /dev/null)):"
+            fi
+        else
+            echo -n "($GITNAME/$GITBRANCH):"
         fi
-    else
-        echo -n "$BR)"
     fi
 }
 
 function parse_git_status {
     local ST=$(git status --short 2> /dev/null)
     if [ -n "$ST" ]
-    then echo -n "(+"
-    else echo -n "(-"
+    then echo -n "+"
+    else echo -n "-"
     fi
 }
 
-function parse_git_directory {
-    local GD=$(git rev-parse --show-toplevel 2> /dev/null)
-    local CURRENT=$(echo "$GD" | sed -e "s|.*/\(.*\)/\(.*\)|\2|")
-    echo "$CURRENT/"
-}
-
-# export all these for subshells
-export -f git_prompt parse_git_branch parse_git_status parse_git_directory we_are_in_git_work_tree
-
+# export for subshells
+export -f git_prompt parse_git_status
 export PS1='\[\033]0;\u@\h: \w\007\]\[\033[01;36m\]\h\[\033[00m\]:\[\033[01;34m\]$(git_prompt)\[\033[01;31m\]\W\[\033[00m\]\$ '
 export EDITOR=emacsclient VISUAL=emacsclient ALTERNATE_EDITOR=emacs
 export HISTCONTROL=ignoredups
