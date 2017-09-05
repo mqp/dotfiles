@@ -1,9 +1,12 @@
 {
     "__meta__": {
-        "about": "HTTPie configuration file",
-        "help": "https://github.com/jkbr/httpie#config",
-        "httpie": "0.4.1"
-    },
-    "default_options": ["--body", "--style=bw", "--session=default"],
-    "implicit_content_type": "json"
+        "about": "HTTPie configuration file", 
+        "help": "https://httpie.org/docs#config", 
+        "httpie": "0.9.9"
+    }, 
+    "default_options": [
+        "--body", 
+        "--style=bw", 
+        "--session=default"
+    ]
 }
