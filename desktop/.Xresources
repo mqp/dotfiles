@@ -1,30 +1,30 @@
-Emacs.geometry: 120x40
-Emacs.background: #3F3F3F
-Emacs.pane.menubar.shadowThickness: 1
-Emacs.pane.menubar.margin: 1
-Emacs.toolBar: off
-Emacs.menuBar: off
-Emacs.verticalScrollBars: off
-Emacs.cursorColor: white
+Xft.rgba: rgb
+Xft.lcdfilter: lcddefault
+
+Emacs*.geometry: 120x40
+Emacs*.background: #3F3F3F
+Emacs*.pane.menubar.shadowThickness: 1
+Emacs*.pane.menubar.margin: 1
+Emacs*.toolBar: off
+Emacs*.menuBar: off
+Emacs*.verticalScrollBars: off
+Emacs*.cursorColor: white
 
 URxvt*.geometry: 120x40
 URxvt*.depth: 32
 URxvt*.foreground: #FFFFFF
-URxvt*.background: [80]#000000
+URxvt*.background: [90]#000000
 URxvt*.cursorColor: white
 URxvt*.colorUL: #c5f779
 URxvt*.underlineColor: #c5f779
 URxvt*.font: xft:Consolas:size=11
-URxvt*.iconFile: /usr/share/icons/Humanity/apps/64/gnome-terminal.svg
+URxvt*.iconFile: /usr/share/icons/Humanity/apps/64/utilities-terminal.svg
 URxvt*.letterSpace: -2
 URxvt*.scrollBar: false
 URxvt*.saveLines: 10000
-URxvt*.termName: screen-256color
-
-URxvt*.perl-ext-common: clipboard
-URxvt*.keysym.C-y: perl:clipboard:paste
-URxvt*.keysym.M-w: perl:clipboard:copy
-URxvt*.keysym.C-w: perl:clipboard:copy
+URxvt*.termName: xterm-256color
+URxvt*.transparent: true
+URxvt*.shading: 20
 
 *foreground: #FFFFFF
 *background: #000010

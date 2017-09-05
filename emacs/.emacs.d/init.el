@@ -5,10 +5,6 @@
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
 
-(add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
-(load-theme 'zenburn t)
-(defalias 'yes-or-no-p 'y-or-n-p)
-
 (setq frame-title-format
       '(:eval
         (if (buffer-file-name)
@@ -16,6 +12,13 @@
              (concat "/home/" user-login-name) "~" buffer-file-name)
           "%b")))
 (set-frame-font "Consolas-11")
+
+(add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
+(defvar zenburn-override-colors-alist
+  `(("zenburn-bg" . nil)))
+(load-theme 'zenburn t)
+
+(defalias 'yes-or-no-p 'y-or-n-p)
 
 (prefer-coding-system 'utf-8-unix)
 
