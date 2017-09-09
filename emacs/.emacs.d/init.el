@@ -288,39 +288,4 @@
   :config
   (add-hook 'ssh-config-mode-hook 'turn-on-font-lock))
 
-(make-variable-buffer-local 'erc-fill-column)
-(use-package erc
-  :defer t
-  :init
-  (setq
-   erc-autojoin-channels-alist '(("freenode.net" "#lesswrong" "#go" "#clojure" "#emacs"))
-   erc-autojoin-delay 1
-   erc-email-userid "cata"
-   erc-modules '(autojoin button completion irccontrols list match menu move-to-prompt netsplit networks noncommands readonly ring scrolltobottom stamp track)
-   erc-prompt ">"
-   erc-prompt-for-password nil
-   erc-server "irc.freenode.net"
-   erc-hide-list '("JOIN" "PART" "QUIT"))
-  (erc-services-mode 1)
-  (erc-autojoin-mode 1)
-  :config
-  (add-hook 'erc-mode-hook (lambda () (auto-fill-mode 0)))
-  (add-hook
-   'window-configuration-change-hook
-   '(lambda ()
-      (save-excursion
-        (walk-windows
-         (lambda (w)
-           (let ((buffer (window-buffer w)))
-             (set-buffer buffer)
-             (when (eq major-mode 'erc-mode)
-               (setq erc-fill-column (- (window-width w) 2))))))))))
-
-(use-package erc-services
-  :defer t
-  :init
-  (setq
-   erc-nickserv-passwords '((freenode (("cata" . "sikhianr"))))
-   erc-prompt-for-nickserv-password nil))
-
 (load (concat user-emacs-directory "bindings/bindings-general"))
