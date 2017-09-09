@@ -1,9 +1,11 @@
 ;;; -*- no-byte-compile: t -*-
 
 ;; turn off mouse interface early in startup to avoid momentary display
+
+(if (display-graphic-p) (tool-bar-mode -1))
+(if (display-graphic-p) (scroll-bar-mode -1))
+
 (menu-bar-mode -1)
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
 
 (setq frame-title-format
       '(:eval
