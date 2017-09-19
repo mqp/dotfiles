@@ -8,7 +8,7 @@
     ("gnu" . "http://elpa.gnu.org/packages/")))
 
 (defvar dependencies-packages
-  '(auto-complete
+  '(company
     ac-cider
     cider
     popup

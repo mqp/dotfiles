@@ -169,29 +169,6 @@
   :config
   (global-flycheck-mode 1))
 
-;; hook AC into completion-at-point
-(defun set-auto-complete-as-completion-at-point-function ()
-  (setq completion-at-point-functions '(auto-complete)))
-
-(use-package auto-complete
-  :init
-  (setq-default
-   ac-auto-start nil
-   ac-auto-show-menu nil
-   ac-use-quick-help t
-   ac-use-menu-map t
-   ac-quick-help-delay 0.2
-   ac-modes '(clojure-mode cider-mode css-mode emacs-lisp-mode web-mode))
-  :config
-  (ac-config-default)
-  (ac-set-trigger-key "TAB")
-  (global-auto-complete-mode t)
-  (add-hook 'auto-complete-mode-hook 'set-auto-complete-as-completion-at-point-function))
-
-(use-package auto-complete-config
-  :config
-  (define-key ac-completing-map "\M-/" 'ac-stop)
-  (add-to-list 'ac-dictionary-directories (concat user-emacs-directory "ac-dict")))
 
 (use-package subword
   :defer t
@@ -208,13 +185,13 @@
   (put-clojure-indent 'run 'defun)
   (put-clojure-indent 'fresh 'defun))
 
-(use-package ac-cider
+(use-package company
   :defer t
   :config
-  (add-hook 'cider-mode-hook 'ac-flyspell-workaround)
-  (add-hook 'cider-mode-hook 'ac-cider-setup)
-  (add-hook 'cider-mode-hook 'set-auto-complete-as-completion-at-point-function)
-  (add-hook 'cider-repl-mode-hook 'ac-cider-setup))
+  (setq company-idle-delay nil)
+  (add-hook 'cider-mode-hook #'company-mode)
+  (add-hook 'cider-repl-mode-hook #'company-mode)
+  (global-set-key (kbd "M-TAB") #'company-indent-or-complete-common))
 
 (use-package cider
   :defer t
@@ -225,9 +202,7 @@
   (setq cider-repl-use-pretty-printing t)
   :config
   (add-hook 'cider-repl-mode-hook 'turn-on-eldoc-mode)
-  (add-hook 'cider-repl-mode-hook 'subword-mode)
-  (define-key cider-mode-map (kbd "C-c C-d") 'ac-nrepl-popup-doc)
-  (define-key cider-repl-mode-map (kbd "C-c C-d") 'ac-nrepl-popup-doc))
+  (add-hook 'cider-repl-mode-hook 'subword-mode))
 
 (use-package ruby-mode :mode "\\.\\(arb\\|rabl\\)$")
 (use-package dockerfile-mode :mode "Dockerfile")
