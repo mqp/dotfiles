@@ -27,8 +27,37 @@ function parse_git_status {
     fi
 }
 
+# moz-ec2 [env] [asg]
+function moz-ec2 {
+    local ALL=$(aws ec2 describe-instances)
+    local SELECTED=$(jq -r '.Reservations | map(.Instances) | flatten | map(select(any(.State; .Name=="running")))' <<< "$ALL")
+    if [ ! -z "$1" ]
+    then
+        SELECTED=$(jq -r "map(select(any(.Tags//[]|from_entries; .[\"env\"]==\"${1}\")))" <<< "$SELECTED")
+    fi
+    if [ ! -z "$2" ]
+    then
+        SELECTED=$(jq -r "map(select(any(.Tags//[]|from_entries; .[\"aws:autoscaling:groupName\"]==\"${1}-${2}\")))" <<< "$SELECTED")
+    fi
+    OUTPUT=$(jq -r '.[] | [((.Tags//[])[]|select(.Key=="aws:autoscaling:groupName")|.Value) // null, ((.Tags//[])[]|select(.Key=="Name")|.Value) // null, .PrivateIpAddress, .PublicIpAddress] | "\(.[0]) \(.[1]) \(.[2]) \(.[3])"' <<< "$SELECTED")
+    echo "${OUTPUT}" | sort -k 1,2 | column -t
+}
+
+# moz-host env asg
+function moz-host {
+    moz-ec2 $1 $2 | shuf | head -n 1 | awk '{print $2}'
+}
+
+# moz-proxy cmd env ...cmd-args
+function moz-proxy {
+    $1 -o ProxyCommand="ssh -W %h:%p $(moz-host $2 bastion).reticulum.io" "${@:3}"
+}
+
+alias moz-ssh='moz-proxy ssh'
+alias moz-scp='moz-proxy scp'
+
 # export for subshells
-export -f git_prompt parse_git_status
+export -f git_prompt parse_git_status moz-ec2 moz-host moz-proxy
 export PS1='\[\033]0;\u@\h: \w\007\]\[\033[01;36m\]\h\[\033[00m\]:\[\033[01;34m\]$(git_prompt)\[\033[01;31m\]\W\[\033[00m\]\$ '
 export EDITOR=emacsclient VISUAL=emacsclient ALTERNATE_EDITOR=emacs
 export HISTCONTROL=ignoredups
