@@ -39,7 +39,7 @@ function moz-ec2 {
     then
         SELECTED=$(jq -r "map(select(any(.Tags//[]|from_entries; .[\"aws:autoscaling:groupName\"]==\"${1}-${2}\")))" <<< "$SELECTED")
     fi
-    OUTPUT=$(jq -r '.[] | [((.Tags//[])[]|select(.Key=="aws:autoscaling:groupName")|.Value) // null, ((.Tags//[])[]|select(.Key=="Name")|.Value) // null, .PrivateIpAddress, .PublicIpAddress] | "\(.[0]) \(.[1]) \(.[2]) \(.[3])"' <<< "$SELECTED")
+    OUTPUT=$(jq -r '.[] | [((.Tags//[])[]|select(.Key=="aws:autoscaling:groupName")|.Value) // "null", ((.Tags//[])[]|select(.Key=="Name")|.Value) // "null", .PrivateIpAddress // "null", .PublicIpAddress // "null"] | @tsv' <<< "$SELECTED")
     echo "${OUTPUT}" | sort -k 1,2 | column -t
 }
 
