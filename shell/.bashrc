@@ -55,6 +55,7 @@ function moz-proxy {
 
 alias moz-ssh='moz-proxy ssh'
 alias moz-scp='moz-proxy scp'
+alias moz-ci='moz-ssh dev -L "8080:$(moz-host dev ci)-local.reticulum.io:8080" $(moz-host dev bastion).reticulum.io'
 
 # export for subshells
 export -f git_prompt parse_git_status moz-ec2 moz-host moz-proxy
