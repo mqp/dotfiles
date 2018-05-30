@@ -27,6 +27,16 @@ function parse_git_status {
     fi
 }
 
+# hab-run [plan-dir]
+function hab-run {
+    local PLAN_DIR=${1:-.}
+    local RESULTS_DIR=$PLAN_DIR/results
+    local RESULTS_ENV=$RESULTS_DIR/last_build.env
+    (export $(cat $RESULTS_ENV | xargs) && sudo -E hab sup unload $pkg_ident)
+    hab pkg build $PLAN_DIR
+    (export $(cat $RESULTS_ENV | xargs) && sudo -E hab sup start $RESULTS_DIR/$pkg_artifact)
+}
+
 # moz-ec2 [env] [asg]
 function moz-ec2 {
     local ALL=$(aws ec2 describe-instances)
