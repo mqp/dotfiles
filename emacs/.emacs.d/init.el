@@ -14,6 +14,7 @@
              (concat "/home/" user-login-name) "~" buffer-file-name)
           "%b")))
 (set-frame-font "Consolas-11")
+(add-to-list 'default-frame-alist '(font . "Consolas-11"))
 
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
 (defvar zenburn-override-colors-alist
