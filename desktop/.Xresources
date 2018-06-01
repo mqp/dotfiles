@@ -1,5 +1,8 @@
-Xft.rgba: rgb
+Xft.autohint: 0
 Xft.lcdfilter: lcddefault
+Xft.hintstyle: hintslight
+Xft.hinting: 1
+Xft.rgba: rgb
 
 Emacs*.geometry: 120x40
 Emacs*.background: #3F3F3F
@@ -17,7 +20,7 @@ URxvt*.background: [90]#000000
 URxvt*.cursorColor: white
 URxvt*.colorUL: #c5f779
 URxvt*.underlineColor: #c5f779
-URxvt*.font: xft:Consolas:size=11
+URxvt*.font: xft:Consolas:size=12
 URxvt*.iconFile: /usr/share/icons/Humanity/apps/64/utilities-terminal.svg
 URxvt*.letterSpace: -2
 URxvt*.scrollBar: false
@@ -25,6 +28,11 @@ URxvt*.saveLines: 10000
 URxvt*.termName: xterm-256color
 URxvt*.transparent: true
 URxvt*.shading: 20
+
+URxvt.perl-ext-common: default,matcher
+URxvt.url-launcher: /usr/bin/xdg-open
+URxvt.matcher.button: 1
+URxvt.matcher.rend.0: Uline Bold fg4
 
 *foreground: #FFFFFF
 *background: #000010
