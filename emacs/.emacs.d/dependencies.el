@@ -3,9 +3,9 @@
 (require 'cl-macs)
 
 (defvar dependencies-archives
-  '(("melpa-stable" . "http://stable.melpa.org/packages/")
-    ("melpa-unstable" . "http://melpa.org/packages/")
-    ("gnu" . "http://elpa.gnu.org/packages/")))
+  '(("melpa-stable" . "https://stable.melpa.org/packages/")
+    ("melpa-unstable" . "https://melpa.org/packages/")
+    ("gnu" . "https://elpa.gnu.org/packages/")))
 
 (defvar dependencies-packages
   '(company
@@ -13,10 +13,12 @@
     cider
     popup
     flycheck
-    fuzzy
+    projectile
+    flx-ido
     ido-ubiquitous
     js2-mode
     magit
+    ag
     gitignore-mode
     gitconfig-mode
     ssh-config-mode
@@ -37,7 +39,15 @@
     haskell-mode
     web-mode
     dockerfile-mode
-    use-package))
+    use-package
+    rust-mode
+    flycheck-rust
+    cargo
+    deferred
+    yaml-mode
+    toml-mode
+    sudo-edit
+    terraform-mode))
 
 (defun dependencies-installed (packages)
   (cl-loop for p in packages

@@ -81,6 +81,9 @@
 
 ;; package-specific configs follow
 
+(require 'magit)
+(add-hook 'git-commit-setup-hook 'git-commit-turn-on-auto-fill)
+
 (use-package lisp-mode
   :config
   (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
@@ -123,7 +126,14 @@
    ido-save-directory-list-file (concat user-emacs-directory "ido.hist")
    ido-ignore-buffers '("\\` " "*Messages*" "*Compile-Log*"))
   (ido-mode t)
-  (ido-ubiquitous-mode 1))
+  (ido-everywhere t)
+  (ido-ubiquitous-mode 1)
+  (flx-ido-mode 1)
+  (setq magit-completing-read-function 'magit-ido-completing-read))
+
+(use-package projectile
+  :init
+  (projectile-global-mode))
 
 (use-package uniquify
   :init
@@ -168,8 +178,22 @@
 
 (use-package flycheck
   :config
-  (global-flycheck-mode 1))
+  (global-flycheck-mode 1)
+  (add-hook 'flycheck-mode-hook 'flycheck-rust-setup))
 
+(use-package rust-mode
+  :init
+  (setq rust-match-angle-brackets nil))
+
+(use-package elixir-mode
+  :config
+  (add-hook 'elixir-mode-hook 'subword-mode)
+  (add-to-list 'auto-mode-alist '("\\.ex$" . elixir-mode))
+  (add-to-list 'auto-mode-alist '("\\.exs$" . elixir-mode)))
+
+(use-package alchemist-mode
+  :init
+  (add-hook 'elixir-mode-hook 'alchemist-mode))
 
 (use-package subword
   :defer t
@@ -187,12 +211,11 @@
   (put-clojure-indent 'fresh 'defun))
 
 (use-package company
-  :defer t
   :config
   (setq company-idle-delay nil)
   (add-hook 'cider-mode-hook #'company-mode)
   (add-hook 'cider-repl-mode-hook #'company-mode)
-  (global-set-key (kbd "M-TAB") #'company-indent-or-complete-common))
+  (global-set-key (kbd "TAB") #'company-indent-or-complete-common))
 
 (use-package cider
   :defer t
