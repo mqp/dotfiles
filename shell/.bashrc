@@ -50,17 +50,22 @@ function moz-host {
     moz-ec2 $1 $2 | shuf | head -n 1 | awk '{print $2}'
 }
 
-# moz-proxy cmd env ...cmd-args
-function moz-proxy {
-    $1 -o ProxyCommand="ssh -W %h:%p $(moz-host $2 bastion).reticulum.io" "${@:3}"
+# moz-tunnel env asg local-port remote-port
+function moz-tunnel {
+    ssh -L "$3:$(moz-host $1 $2)-local.reticulum.io:$4" "$(moz-host $1 bastion).reticulum.io"
 }
 
+# moz-proxy cmd env ...cmd-args
+function moz-proxy {
+    $1 -o ProxyJump="$(moz-host $2 bastion).reticulum.io" "${@:3}"
+}
+
+alias moz-ci='moz-tunnel dev ci 8088 8080'
 alias moz-ssh='moz-proxy ssh'
 alias moz-scp='moz-proxy scp'
-alias moz-ci='moz-ssh dev -L "8080:$(moz-host dev ci)-local.reticulum.io:8080" $(moz-host dev bastion).reticulum.io'
 
 # export for subshells
-export -f git_prompt hab-run moz-ec2 moz-host moz-proxy
+export -f git_prompt hab-run moz-ec2 moz-host moz-proxy moz-tunnel
 export PS1='\[\033]0;\u@\H: \w\007\]\[\033[01;36m\]\H\[\033[00m\]:\[\033[01;34m\]$(git_prompt)\[\033[01;31m\]\W\[\033[00m\]\$ '
 export EDITOR=emacsclient VISUAL=emacsclient ALTERNATE_EDITOR=emacs
 export HISTCONTROL=ignoredups
