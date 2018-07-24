@@ -48,7 +48,8 @@
  auto-save-file-name-transforms `((".*" ,temporary-file-directory t))
  create-lockfiles nil
  indent-tabs-mode nil
- tab-width 8
+ tab-width 4
+ js-indent-level 2
  fill-column 120
  global-auto-revert-mode t
  fit-window-to-buffer-horizontally "only")
