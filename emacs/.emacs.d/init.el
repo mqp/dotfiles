@@ -94,7 +94,7 @@
 (use-package prog-mode
   :bind ("RET" . newline-and-indent)
   :init
-  (add-hook 'prog-mode-hook 'linum-mode)
+  (add-hook 'prog-mode-hook 'display-line-numbers-mode)
   (add-hook 'prog-mode-hook 'electric-pair-mode)
   (add-hook 'prog-mode-hook 'electric-indent-mode))
 
