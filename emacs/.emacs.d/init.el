@@ -26,6 +26,7 @@
 (prefer-coding-system 'utf-8-unix)
 
 (setq-default
+ bidi-display-reordering nil
  echo-keystrokes 0.1
  message-log-max t
  mouse-wheel-mode t
