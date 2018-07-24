@@ -45,7 +45,6 @@
     cargo
     deferred
     yaml-mode
-    toml-mode
     sudo-edit
     terraform-mode))
 
