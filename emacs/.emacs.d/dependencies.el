@@ -32,7 +32,7 @@
     editorconfig
     powershell
     scss-mode
-    smex
+    cmake-mode
     json-mode
     csharp-mode
     php-mode

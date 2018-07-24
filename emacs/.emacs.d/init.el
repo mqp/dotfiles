@@ -128,7 +128,7 @@
   (ido-mode t)
   (ido-everywhere t)
   (ido-ubiquitous-mode 1)
-  (flx-ido-mode 1)
+  (flx-ido-mode 0)
   (setq magit-completing-read-function 'magit-ido-completing-read))
 
 (use-package projectile
@@ -169,17 +169,11 @@
   (setq-default show-paren-style 'parenthesis)
   (show-paren-mode 1))
 
-(use-package smex
-  :bind ("M-x" . smex)
-  :init
-  (setq smex-save-file (concat user-emacs-directory "smex-items"))
-  :config
-  (smex-initialize))
-
 (use-package flycheck
   :config
   (global-flycheck-mode 1)
-  (add-hook 'flycheck-mode-hook 'flycheck-rust-setup))
+  (flycheck-add-mode 'javascript-eslint 'web-mode))
+
 
 (use-package rust-mode
   :init
