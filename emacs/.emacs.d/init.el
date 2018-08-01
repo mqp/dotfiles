@@ -26,6 +26,7 @@
 (prefer-coding-system 'utf-8-unix)
 
 (setq-default
+ initial-major-mode 'text-mode
  bidi-display-reordering nil
  echo-keystrokes 0.1
  message-log-max t
