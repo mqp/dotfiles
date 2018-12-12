@@ -15,10 +15,11 @@
     flycheck
     projectile
     flx-ido
-    ido-ubiquitous
+    ;;;ido-ubiquitous
     js2-mode
     magit
     ag
+    systemd
     gitignore-mode
     gitconfig-mode
     ssh-config-mode
@@ -46,7 +47,9 @@
     deferred
     yaml-mode
     sudo-edit
-    terraform-mode))
+    terraform-mode
+    elixir-mode
+    alchemist))
 
 (defun dependencies-installed (packages)
   (cl-loop for p in packages
@@ -64,7 +67,6 @@
   (setq-default
    package-user-dir (concat user-emacs-directory "elpa")
    package-enable-at-startup nil)
-  (package-initialize)
 
   (unless (dependencies-installed dependencies-packages)
     ;; check for new packages (package versions)

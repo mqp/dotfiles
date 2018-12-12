@@ -54,6 +54,7 @@
  js-indent-level 2
  fill-column 120
  global-auto-revert-mode t
+ require-final-newline t
  fit-window-to-buffer-horizontally "only")
 
 ;; load local packages, then package.el dependencies
@@ -130,7 +131,6 @@
    ido-ignore-buffers '("\\` " "*Messages*" "*Compile-Log*"))
   (ido-mode t)
   (ido-everywhere t)
-  (ido-ubiquitous-mode 1)
   (flx-ido-mode 0)
   (setq magit-completing-read-function 'magit-ido-completing-read))
 
@@ -148,7 +148,7 @@
   :init
   (setq-default
    save-place-file (concat user-emacs-directory "places")
-   save-place t))
+   save-place-mode 1))
 
 (use-package recentf
   :init
@@ -188,9 +188,9 @@
   (add-to-list 'auto-mode-alist '("\\.ex$" . elixir-mode))
   (add-to-list 'auto-mode-alist '("\\.exs$" . elixir-mode)))
 
-(use-package alchemist-mode
+(use-package alchemist
   :init
-  (add-hook 'elixir-mode-hook 'alchemist-mode))
+  (add-hook 'elixir-mode-hook 'alchemist))
 
 (use-package subword
   :defer t
