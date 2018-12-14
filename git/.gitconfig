@@ -15,8 +15,8 @@
 	new = !sh -c 'git log $1@{1}..$1@{0} "$@"'
 	tidybranches = "!f() { git checkout --quiet master && git branch --merged | grep --invert-match '\\*' | xargs -n 1 git branch --delete; git checkout --quiet @{-1}; git remote prune origin; }; f"
 [user]
-	email = marshall@quander.me
-	name = "Marshall Quander"
+	email = marshall@pol.rs
+	name = "Marshall Polaris"
 [rerere]
 	enabled = True
 [merge]
