@@ -27,53 +27,8 @@ function git_prompt {
     fi
 }
 
-# hab-run [plan-dir]
-function hab-run {
-    local PLAN_DIR=${1:-.}
-    local RESULTS_DIR=$PLAN_DIR/results
-    local RESULTS_ENV=$RESULTS_DIR/last_build.env
-    (export $(cat $RESULTS_ENV | xargs) && sudo -E hab svc unload $pkg_ident)
-    hab pkg build $PLAN_DIR
-    (export $(cat $RESULTS_ENV | xargs) && sudo -E hab svc start $RESULTS_DIR/$pkg_artifact)
-}
-
-# moz-ec2 [env] [asg]
-function moz-ec2 {
-    local ALL=$(aws ec2 describe-instances)
-    local SELECTED=$(jq -r '.Reservations | map(.Instances) | flatten | map(select(any(.State; .Name=="running")))' <<< "$ALL")
-    if [ ! -z "$1" ]
-    then
-        SELECTED=$(jq -r "map(select(any(.Tags//[]|from_entries; .[\"env\"]==\"${1}\")))" <<< "$SELECTED")
-    fi
-    if [ ! -z "$2" ]
-    then
-        SELECTED=$(jq -r "map(select(any(.Tags//[]|from_entries; .[\"aws:autoscaling:groupName\"]==\"${1}-${2}\")))" <<< "$SELECTED")
-    fi
-    OUTPUT=$(jq -r '.[] | [((.Tags//[])[]|select(.Key=="aws:autoscaling:groupName")|.Value) // "null", ((.Tags//[])[]|select(.Key=="Name")|.Value) // "null", .PrivateIpAddress // "null", .PublicIpAddress // "null"] | @tsv' <<< "$SELECTED")
-    echo "${OUTPUT}" | sort -k 1,2 | column -t
-}
-
-# moz-host env asg
-function moz-host {
-    moz-ec2 $1 $2 | shuf | head -n 1 | awk '{print $2}'
-}
-
-# moz-tunnel env asg local-port remote-port
-function moz-tunnel {
-    ssh -L "$3:$(moz-host $1 $2)-local.reticulum.io:$4" "$(moz-host $1 bastion).reticulum.io"
-}
-
-# moz-proxy cmd env ...cmd-args
-function moz-proxy {
-    $1 -o ProxyJump="$(moz-host $2 bastion).reticulum.io" "${@:3}"
-}
-
-alias moz-ci='moz-tunnel dev ci 8088 8080'
-alias moz-ssh='moz-proxy ssh'
-alias moz-scp='moz-proxy scp'
-
 # export for subshells
-export -f git_prompt hab-run moz-ec2 moz-host moz-proxy moz-tunnel
+export -f git_prompt
 export PS1='\[\033]0;\u@\H: \w\007\]\[\033[01;36m\]\H\[\033[00m\]:\[\033[01;34m\]$(git_prompt)\[\033[01;31m\]\W\[\033[00m\]\$ '
 export EDITOR=emacsclient VISUAL=emacsclient ALTERNATE_EDITOR=emacs
 export HISTCONTROL=ignoredups
