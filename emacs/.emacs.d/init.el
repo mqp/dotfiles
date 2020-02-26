@@ -177,10 +177,10 @@
   (global-flycheck-mode 1)
   (flycheck-add-mode 'javascript-eslint 'web-mode))
 
-
 (use-package rust-mode
   :init
-  (setq rust-match-angle-brackets nil))
+  (setq rust-match-angle-brackets nil)
+  (add-hook 'flycheck-mode-hook #'flycheck-rust-setup))
 
 (use-package elixir-mode
   :config
@@ -210,20 +210,7 @@
 (use-package company
   :config
   (setq company-idle-delay nil)
-  (add-hook 'cider-mode-hook #'company-mode)
-  (add-hook 'cider-repl-mode-hook #'company-mode)
   (global-set-key (kbd "TAB") #'company-indent-or-complete-common))
-
-(use-package cider
-  :defer t
-  :init
-  (setq nrepl-hide-special-buffers t)
-  (setq cider-show-error-buffer t)
-  (setq cider-repl-history-file (concat user-emacs-directory "cider-history"))
-  (setq cider-repl-use-pretty-printing t)
-  :config
-  (add-hook 'cider-repl-mode-hook 'turn-on-eldoc-mode)
-  (add-hook 'cider-repl-mode-hook 'subword-mode))
 
 (use-package ruby-mode :mode "\\.\\(arb\\|rabl\\)$")
 (use-package dockerfile-mode :mode "Dockerfile")
@@ -261,14 +248,16 @@
   (setq-default
    flycheck-disabled-checkers (append flycheck-disabled-checkers '(json-jsonlist))))
 
-(use-package js2-mode
+(use-package rjsx-mode
   :mode "\\.js$"
   :config
-  (add-hook 'js2-mode-hook 'fn-mode)
-  (add-hook 'js2-mode-hook 'subword-mode)
+  (add-hook 'rjsx-mode-hook 'fn-mode)
+  (add-hook 'rjsx-mode-hook 'subword-mode)
   ;; disable jshint since we prefer eslint checking
   (setq-default
    flycheck-disabled-checkers (append flycheck-disabled-checkers '(javascript-jshint))))
+
+(use-package handlebars-mode)
 
 (use-package haskell-mode
   :defer t

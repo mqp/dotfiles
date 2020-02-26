@@ -9,14 +9,13 @@
 
 (defvar dependencies-packages
   '(company
-    ac-cider
-    cider
     popup
     flycheck
     projectile
     flx-ido
     ;;;ido-ubiquitous
-    js2-mode
+    handlebars-mode
+    rjsx-mode
     magit
     ag
     systemd
@@ -67,6 +66,7 @@
   (setq-default
    package-user-dir (concat user-emacs-directory "elpa")
    package-enable-at-startup nil)
+  (package-initialize)
 
   (unless (dependencies-installed dependencies-packages)
     ;; check for new packages (package versions)
