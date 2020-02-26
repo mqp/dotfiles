@@ -22,7 +22,7 @@ URxvt*.background: [90]#000000
 URxvt*.cursorColor: white
 URxvt*.colorUL: #c5f779
 URxvt*.underlineColor: #c5f779
-URxvt*.font: xft:Ubuntu Mono:size=13
+URxvt*.font: xft:Consolas:size=12
 URxvt*.iconFile: /usr/share/icons/Humanity/apps/64/utilities-terminal.svg
 URxvt*.letterSpace: -2
 URxvt*.scrollBar: false
