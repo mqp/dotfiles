@@ -5,6 +5,7 @@
 emacs/.emacs.d/elpa
 emacs/.emacs.d/places
 emacs/.emacs.d/tramp
+emacs/.emacs.d/transient
 emacs/.emacs.d/eshell/history
 emacs/.emacs.d/eshell/lastdir
 emacs/.emacs.d/smex-items
