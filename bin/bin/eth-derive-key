@@ -1,0 +1,11 @@
+#!/bin/bash
+
+[ -z "$1" ] && echo "Usage: eth-derive-key passphrase" && exit 1
+
+privkey="$(echo -n "$1" | sha256sum | awk '{print $1}')"
+secp256k1_priv_key="$(echo 302e0201010420 "$privkey" a00706052b8104000a)"
+openssl_key="$(echo "$secp256k1_priv_key" | xxd -r -p | openssl ec -inform d -text -noout)"
+secp256k1_pub_key="$(echo "$openssl_key" | grep pub -A 5 | tail -n +2 | tr -d '\n[:space:]:' | sed 's/^04//')"
+ethereum_addr="$(echo "$secp256k1_pub_key" | keccak-256sum -x -l | tr -d ' -' | tail -c 41)"
+echo $privkey
+echo "0x$ethereum_addr"
