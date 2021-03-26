@@ -14,6 +14,7 @@
     projectile
     flx-ido
     ;;;ido-ubiquitous
+    geiser
     handlebars-mode
     rjsx-mode
     magit

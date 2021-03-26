@@ -188,6 +188,11 @@
   (add-to-list 'auto-mode-alist '("\\.ex$" . elixir-mode))
   (add-to-list 'auto-mode-alist '("\\.exs$" . elixir-mode)))
 
+(use-package geiser
+  :defer t
+  :config (setq geiser-active-implementations '(mit))
+  :hook (scheme-mode . geiser-mode))
+
 (use-package alchemist
   :init
   (add-hook 'elixir-mode-hook 'alchemist))
