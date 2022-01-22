@@ -11,17 +11,13 @@
   '(company
     popup
     flycheck
-    projectile
     flx-ido
     ;;;ido-ubiquitous
-    geiser
     handlebars-mode
     rjsx-mode
     magit
     ag
     systemd
-    gitignore-mode
-    gitconfig-mode
     ssh-config-mode
     clojure-mode
     glsl-mode
@@ -41,15 +37,13 @@
     web-mode
     dockerfile-mode
     use-package
-    rust-mode
-    flycheck-rust
+    rustic
+    lsp-mode
     cargo
     deferred
     yaml-mode
     sudo-edit
-    terraform-mode
-    elixir-mode
-    alchemist))
+    terraform-mode))
 
 (defun dependencies-installed (packages)
   (cl-loop for p in packages

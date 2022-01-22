@@ -13,8 +13,8 @@
             (replace-regexp-in-string
              (concat "/home/" user-login-name) "~" buffer-file-name)
           "%b")))
-(set-frame-font "Consolas-11")
-(add-to-list 'default-frame-alist '(font . "Consolas-11"))
+(set-frame-font "Fira Code-11")
+(add-to-list 'default-frame-alist '(font . "Fira Code-11"))
 
 (add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
 (defvar zenburn-override-colors-alist
@@ -134,10 +134,6 @@
   (flx-ido-mode 0)
   (setq magit-completing-read-function 'magit-ido-completing-read))
 
-(use-package projectile
-  :init
-  (projectile-global-mode))
-
 (use-package uniquify
   :init
   (setq-default
@@ -172,30 +168,16 @@
   (setq-default show-paren-style 'parenthesis)
   (show-paren-mode 1))
 
+(use-package rustic
+  :config
+  (setq lsp-enable-symbol-highlighting nil)
+  (setq rustic-format-on-save t)
+)
+
 (use-package flycheck
   :config
   (global-flycheck-mode 1)
   (flycheck-add-mode 'javascript-eslint 'web-mode))
-
-(use-package rust-mode
-  :init
-  (setq rust-match-angle-brackets nil)
-  (add-hook 'flycheck-mode-hook #'flycheck-rust-setup))
-
-(use-package elixir-mode
-  :config
-  (add-hook 'elixir-mode-hook 'subword-mode)
-  (add-to-list 'auto-mode-alist '("\\.ex$" . elixir-mode))
-  (add-to-list 'auto-mode-alist '("\\.exs$" . elixir-mode)))
-
-(use-package geiser
-  :defer t
-  :config (setq geiser-active-implementations '(mit))
-  :hook (scheme-mode . geiser-mode))
-
-(use-package alchemist
-  :init
-  (add-hook 'elixir-mode-hook 'alchemist))
 
 (use-package subword
   :defer t

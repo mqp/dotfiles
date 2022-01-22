@@ -37,7 +37,9 @@ export HISTFILESIZE=2000
 export PATH=$PATH:$HOME/bin:$HOME/.cargo/bin:$HOME/.local/bin
 export GRADLE_OPTS="-Dorg.gradle.daemon=true -Dorg.gradle.parallel=true"
 export JAVA_OPTS="-Xms128m -Xmx16384m"
+export _JAVA_AWT_WM_NONREPARENTING=1
 export BOTO_CONFIG="~/.aws/config"
+export VDPAU_DRIVER=radeonsi
 
 # address problems with Gnome apps
 # http://debbugs.gnu.org/cgi/bugreport.cgi?bug=15154#11
