@@ -30,7 +30,9 @@ function git_prompt {
 # export for subshells
 export -f git_prompt
 export PS1='\[\033]0;\u@\H: \w\007\]\[\033[01;36m\]\H\[\033[00m\]:\[\033[01;34m\]$(git_prompt)\[\033[01;31m\]\W\[\033[00m\]\$ '
-export EDITOR=emacsclient VISUAL=emacsclient ALTERNATE_EDITOR=emacs
+export EDITOR=emacsclient -t
+export VISUAL=emacsclient -c
+export ALTERNATE_EDITOR=emacs
 export HISTCONTROL=ignoredups
 export HISTSIZE=1000
 export HISTFILESIZE=2000
