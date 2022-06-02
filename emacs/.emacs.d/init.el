@@ -1,13 +1,14 @@
 ;;; -*- no-byte-compile: t -*-
 
-;; turn off mouse interface early in startup to avoid momentary display
+(setq-default gc-cons-threshold (* 256 1024 1024))
 
+;; turn off mouse interface early in startup to avoid momentary display
 (if (display-graphic-p) (tool-bar-mode -1))
 (if (display-graphic-p) (scroll-bar-mode -1))
 
 (menu-bar-mode -1)
 
-(setq frame-title-format
+(setq-default frame-title-format
       '(:eval
         (if (buffer-file-name)
             (replace-regexp-in-string
@@ -21,10 +22,7 @@
   `(("zenburn-bg" . nil)))
 (load-theme 'zenburn t)
 
-(defalias 'yes-or-no-p 'y-or-n-p)
-
 (prefer-coding-system 'utf-8-unix)
-
 (setq-default
  initial-major-mode 'text-mode
  bidi-display-reordering nil
@@ -51,11 +49,33 @@
  create-lockfiles nil
  indent-tabs-mode nil
  tab-width 4
- js-indent-level 2
  fill-column 120
  global-auto-revert-mode t
  require-final-newline t
- fit-window-to-buffer-horizontally "only")
+ fit-window-to-buffer-horizontally "only"
+ read-process-output-max (* 16 1024 1024)
+ server-client-instructions nil)
+
+(defalias 'yes-or-no-p 'y-or-n-p)
+
+;; set up package.el and use-package
+(require 'package)
+(setq package-native-compile t)
+(add-to-list 'package-archives '("elpa" . "https://elpa.gnu.org/packages/"))
+(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+(unless (package-installed-p 'use-package)
+  (package-install 'use-package))
+(eval-when-compile (require 'use-package))
+(setq-default
+ use-package-verbose t
+ use-package-always-ensure t)
+(setq use-package-compute-statistics t)
+
+(cl-letf (((symbol-function 'define-obsolete-function-alias) #'defalias))
+  (use-package benchmark-init
+    :config
+    (require 'benchmark-init-modes)                                     ; explicitly required
+    (add-hook 'after-init-hook #'benchmark-init/deactivate)))
 
 ;; load local packages, then package.el dependencies
 (defvar local-packages-path (concat user-emacs-directory "vendor"))
@@ -68,14 +88,8 @@
                  (not (equal f ".")))
         (add-to-list 'load-path name)))))
 
+;; miscellaneous config
 (load (concat user-emacs-directory "utils"))
-(load (concat user-emacs-directory "dependencies"))
-(dependencies-initialize)
-
-;; set up use-package, miscellaneous config
-(eval-when-compile (require 'use-package))
-(setq use-package-verbose t)
-(add-to-list 'backup-directory-alist (cons tramp-file-name-regexp nil))
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (add-to-list 'auto-mode-alist '("\\.zsh\\'" . shell-script-mode))
 
@@ -83,174 +97,212 @@
 (delete 'try-expand-line hippie-expand-try-functions-list)
 (delete 'try-expand-list hippie-expand-try-functions-list)
 
+(defun bash ()
+  (interactive)
+  (term "/bin/bash"))
+
+(defun ashc (cmd)
+  (interactive "sCall command: ")
+  (let ((output-buffer (generate-new-buffer (format "*async:%s*" cmd)))
+        (error-buffer  (generate-new-buffer (format "*error:%s*" cmd))))
+    (async-shell-command cmd output-buffer error-buffer)))
+
 ;; package-specific configs follow
 
-(require 'magit)
-(add-hook 'git-commit-setup-hook 'git-commit-turn-on-auto-fill)
+(require 'shell)
+(add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 
-(use-package lisp-mode
+(require 'js)
+(setq-default js-indent-level 2)
+(add-hook 'js-mode-hook 'subword-mode)
+(define-key js-mode-map (kbd "M-.") nil)
+
+(require 'lisp-mode)
+(add-hook 'lisp-interaction-mode-hook 'eldoc-mode)
+(add-hook 'lisp-interaction-mode-hook 'pretty-lambdas)
+(add-hook 'emacs-lisp-mode-hook 'eldoc-mode)
+(add-hook 'emacs-lisp-mode-hook 'pretty-lambdas)
+
+(require 'prog-mode)
+(add-hook 'prog-mode-hook 'display-line-numbers-mode)
+(add-hook 'prog-mode-hook 'electric-pair-mode)
+(add-hook 'prog-mode-hook 'electric-indent-mode)
+
+(require 'wgsl-mode)
+(add-to-list 'auto-mode-alist '("\\.wgsl$'" . wgsl-mode))
+
+(require 'comint)
+;; sets the current buffer process to not pop up an annoying notification on Emacs exit
+(add-hook
+ 'comint-exec-hook
+ (lambda () (set-process-query-on-exit-flag (get-buffer-process (current-buffer)) nil)))
+
+(require 'uniquify)
+(setq-default
+ uniquify-buffer-name-style 'forward
+ uniquify-ignore-buffers-re "^\\*")
+
+(require 'eldoc)
+(setq-default eldoc-idle-delay 0)
+
+(require 'ido)
+(setq-default
+ ido-max-directory-size 100000
+ ido-max-prospects 10
+ ido-enable-flex-matching t
+ ido-enable-prefix nil
+ ido-enable-last-directory-history t
+ ido-use-filename-at-point nil
+ ido-use-url-at-point nil
+ ido-use-virtual-buffers t
+ ido-save-directory-list-file (concat user-emacs-directory "ido.hist"))
+(ido-mode 1)
+(ido-everywhere 1)
+
+(use-package ido-completing-read+
   :config
-  (add-hook 'lisp-interaction-mode-hook 'turn-on-eldoc-mode)
-  (add-hook 'lisp-interaction-mode-hook 'pretty-lambdas)
-  (add-hook 'emacs-lisp-mode-hook 'turn-on-eldoc-mode)
-  (add-hook 'emacs-lisp-mode-hook 'pretty-lambdas))
+  (ido-ubiquitous-mode 1))
 
-(use-package prog-mode
-  :bind ("RET" . newline-and-indent)
-  :init
-  (add-hook 'prog-mode-hook 'display-line-numbers-mode)
-  (add-hook 'prog-mode-hook 'electric-pair-mode)
-  (add-hook 'prog-mode-hook 'electric-indent-mode))
+(require 'saveplace)
+(setq-default
+ save-place-file (concat user-emacs-directory "places")
+ save-place-mode 1)
 
-(use-package comint
+(require 'recentf)
+(add-to-list 'recentf-exclude "^/\\(?:ssh\\|su\\|sudo\\)?:")
+(setq-default
+ recentf-max-saved-items 500
+ recentf-max-menu-items 15
+ recentf-save-file (concat user-emacs-directory "recentf"))
+(recentf-mode 1)
+
+(require 'savehist)
+(setq-default
+ savehist-additional-variables '(search ring regexp-search-ring)
+ savehist-autosave-interval 60
+ savehist-file (concat user-emacs-directory "savehist"))
+(savehist-mode 1)
+
+(require 'paren)
+(setq-default show-paren-style 'parenthesis)
+(show-paren-mode 1)
+
+(setq-default css-indent-offset 2)
+
+(use-package so-long)
+(require 'so-long)
+(global-so-long-mode 1)
+
+(require 'fsr-mode)
+(add-to-list 'auto-mode-alist '("firestore\\.rules$" . fsr-mode))
+
+(use-package typescript-mode
+  :mode "\\.\\(ts\\|tsx\\)$"
+  :config
+  (add-hook 'typescript-mode-hook 'lsp)
+  (setq-default typescript-indent-level 2))
+
+(use-package amx
+  :config
+  (amx-mode 1))
+
+(use-package lsp-mode
+  :commands lsp
+  :custom
+  (setq-default lsp-clients-typescript-server-args '("--stdio" "--tsserver-log-file" "/dev/stderr"))
+  :config
+  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\.next\\'")
+  (setq-default lsp-eslint-trace-server t)
+  (setq-default lsp-enable-snippet nil))
+
+(use-package prettier)
+(require 'prettier)
+(add-hook 'after-init-hook #'global-prettier-mode)
+
+(use-package magit
   :defer t
-  :init
-  ;; sets the current buffer process to not pop up an annoying notification on Emacs exit
-  (add-hook
-   'comint-exec-hook
-   (lambda () (set-process-query-on-exit-flag (get-buffer-process (current-buffer)) nil))))
+  :config
+  (add-hook 'git-commit-setup-hook 'git-commit-turn-on-auto-fill)
+  (setq-default magit-completing-read-function 'magit-ido-completing-read))
 
-(use-package eldoc
-  :defer t
-  :diminish eldoc-mode
-  :init
-  (setq eldoc-idle-delay 0))
-
-(use-package ido
-  :init
-  (setq
-   ido-max-directory-size 100000
-   ido-max-prospects 10
-   ido-enable-flex-matching t
-   ido-enable-prefix nil
-   ido-enable-last-directory-history t
-   ido-use-filename-at-point nil
-   ido-use-url-at-point nil
-   ido-use-virtual-buffers t
-   ido-save-directory-list-file (concat user-emacs-directory "ido.hist")
-   ido-ignore-buffers '("\\` " "*Messages*" "*Compile-Log*"))
-  (ido-mode t)
-  (ido-everywhere t)
-  (flx-ido-mode 0)
-  (setq magit-completing-read-function 'magit-ido-completing-read))
-
-(use-package uniquify
-  :init
-  (setq-default
-   uniquify-buffer-name-style 'forward
-   uniquify-ignore-buffers-re "^\\*"))
-
-(use-package saveplace
-  :init
-  (setq-default
-   save-place-file (concat user-emacs-directory "places")
-   save-place-mode 1))
-
-(use-package recentf
-  :init
-  (setq-default
-   recentf-max-saved-items 500
-   recentf-max-menu-items 15
-   recentf-save-file (concat user-emacs-directory "recentf"))
-  (recentf-mode 1))
-
-;; savehist keeps track of some history
-(use-package savehist
-  :init
-  (setq-default
-   savehist-additional-variables '(search ring regexp-search-ring)
-   savehist-autosave-interval 60
-   savehist-file (concat user-emacs-directory "savehist"))
-  (savehist-mode 1))
-
-(use-package paren
-  :init
-  (setq-default show-paren-style 'parenthesis)
-  (show-paren-mode 1))
+(use-package forge :after magit)
 
 (use-package rustic
+  :defer t
   :config
-  (setq lsp-enable-symbol-highlighting nil)
-  (setq rustic-format-on-save t)
-)
+  (add-hook 'rust-mode-hook 'lsp)
+  (setq-default
+   lsp-rust-analyzer-proc-macro-enable t
+   lsp-enable-symbol-highlighting nil
+   rustic-format-on-save nil))
+
+(use-package diminish
+  :init
+  (eval-after-load "eldoc" '(diminish 'eldoc-mode))
+  (eval-after-load "subword" '(diminish 'subword-mode)))
 
 (use-package flycheck
   :config
-  (global-flycheck-mode 1)
-  (flycheck-add-mode 'javascript-eslint 'web-mode))
+  (global-flycheck-mode 1))
 
-(use-package subword
-  :defer t
-  :diminish subword-mode)
+(use-package sudo-edit
+  :commands sudo-edit)
 
-(use-package clojure-mode
-  :defer t
-  :config
-  (add-hook 'clojure-mode-hook 'turn-on-eldoc-mode)
-  (add-hook 'clojure-mode-hook 'pretty-fn)
-  (add-hook 'clojure-mode-hook 'subword-mode)
-  ;; adjust indents for core.logic macros
-  (put-clojure-indent 'run* 'defun)
-  (put-clojure-indent 'run 'defun)
-  (put-clojure-indent 'fresh 'defun))
+(use-package yaml-mode
+  :mode "\\.\\(yaml\\|yml\\)$")
 
 (use-package company
   :config
-  (setq company-idle-delay nil)
+  (setq-default company-idle-delay nil)
+  (add-hook 'after-init-hook 'global-company-mode)
   (global-set-key (kbd "TAB") #'company-indent-or-complete-common))
 
-(use-package ruby-mode :mode "\\.\\(arb\\|rabl\\)$")
-(use-package dockerfile-mode :mode "Dockerfile")
-(use-package php-mode :mode "\\.\\(php\\|inc\\)$")
-(use-package scss-mode :mode "\\.scss$")
-(use-package csharp-mode :mode "\\.cs$")
-(use-package glsl-mode :mode "\\.\\(glsl\\|vert\\|frag\\)$")
-(use-package markdown-mode :mode (("\\.md$" . markdown-mode)
-                                  ("README\\.md$" . gfm-mode)))
+(use-package popup)
 
-(use-package fn-mode :defer t :commands fn-mode)
+(use-package nginx-mode)
+(use-package systemd)
 
-(use-package css-mode
-  :defer t
-  :config
-  (setq css-indent-offset 2))
+(use-package dockerfile-mode
+  :mode "^Dockerfile")
 
-(use-package editorconfig
-  :config
-  (editorconfig-mode 1))
+(use-package php-mode
+  :mode "\\.\\(php\\|inc\\)$")
+
+(use-package csharp-mode
+  :mode "\\.cs$")
+
+(use-package lua-mode
+  :mode "\\.lua$")
+
+(use-package glsl-mode
+  :mode "\\.\\(glsl\\|vert\\|frag\\)$")
+
+(use-package markdown-mode
+  :mode (("\\.md$" . markdown-mode)
+         ("README\\.md$" . gfm-mode)))
 
 (use-package web-mode
-  :mode "\\.\\(jsx\\|html\\)$"
+  :mode "\\.\\(html\\|js\\)$"
   :config
-  (setq web-mode-markup-indent-offset 2)
-  (setq web-mode-css-indent-offset 2)
-  (setq web-mode-ac-sources-alist
-        '(("css" . (ac-source-css-property))
-          ("html" . (ac-source-words-in-buffer ac-source-abbrev)))))
+  (add-hook 'web-mode-hook 'lsp)
+  (setq-default
+   web-mode-code-indent-offset 2
+   web-mode-markup-indent-offset 2
+   web-mode-css-indent-offset 2
+   web-mode-ac-sources-alist
+   '(("css" . (ac-source-css-property))
+     ("html" . (ac-source-words-in-buffer ac-source-abbrev)))))
 
 (use-package json-mode
   :mode "\\.json$"
   :config
+  (add-hook 'json-mode-hook 'lsp)
   ;; disable json-jsonlist checking for json files
   (setq-default
    flycheck-disabled-checkers (append flycheck-disabled-checkers '(json-jsonlist))))
 
-(use-package rjsx-mode
-  :mode "\\.js$"
-  :config
-  (add-hook 'rjsx-mode-hook 'fn-mode)
-  (add-hook 'rjsx-mode-hook 'subword-mode)
-  ;; disable jshint since we prefer eslint checking
-  (setq-default
-   flycheck-disabled-checkers (append flycheck-disabled-checkers '(javascript-jshint))))
-
-(use-package handlebars-mode)
-
-(use-package haskell-mode
-  :defer t
-  :config
-  (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
-  (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation))
+(use-package handlebars-mode
+  :mode "\\.hbs$")
 
 (use-package ssh-config-mode
   :mode ((".ssh/config\\'" . ssh-config-mode)
