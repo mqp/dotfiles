@@ -49,6 +49,11 @@ export JAVA_OPTS="-Xms128m -Xmx16384m"
 export _JAVA_AWT_WM_NONREPARENTING=1
 export BOTO_CONFIG="~/.aws/config"
 export VDPAU_DRIVER=radeonsi
+export GOOGLE_APPLICATION_CREDENTIALS_DEV="/home/mqp/dev-firebase.json"
+export GOOGLE_APPLICATION_CREDENTIALS_PROD="/home/mqp/prod-firebase.json"
+
+# https://bugzilla.mozilla.org/show_bug.cgi?id=1751363
+export MOZ_DISABLE_RDD_SANDBOX=1
 
 # address problems with Gnome apps
 # http://debbugs.gnu.org/cgi/bugreport.cgi?bug=15154#11
