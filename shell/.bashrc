@@ -1,3 +1,5 @@
+#!/bin/bash
+
 if ! shopt -oq posix; then
   if [ -f /usr/share/bash-completion/bash_completion ]; then
     . /usr/share/bash-completion/bash_completion
@@ -29,9 +31,14 @@ function git_prompt {
 
 # export for subshells
 export -f git_prompt
-export PS1='\[\033]0;\u@\H: \w\007\]\[\033[01;36m\]\H\[\033[00m\]:\[\033[01;34m\]$(git_prompt)\[\033[01;31m\]\W\[\033[00m\]\$ '
-export EDITOR=emacsclient -t
-export VISUAL=emacsclient -c
+export PS1='\[\033[01;36m\]\H\[\033[00m\]:\[\033[01;34m\]$(git_prompt)\[\033[01;31m\]\W\[\033[00m\]\$ '
+# only set window title in xterm (e.g. not M-x shell)
+case $TERM in
+    xterm*) PS1="\[\033]0;\u@\H: \w\007\]$PS1";;
+esac
+
+export EDITOR="emacsclient -t"
+export VISUAL="emacsclient -c"
 export ALTERNATE_EDITOR=emacs
 export HISTCONTROL=ignoredups
 export HISTSIZE=1000
