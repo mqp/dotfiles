@@ -250,7 +250,9 @@
   :config
   (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\.next\\'")
   (setq-default lsp-eslint-trace-server t)
-  (setq-default lsp-enable-snippet nil))
+  (setq-default lsp-enable-snippet nil)
+  (setq-default lsp-modeline-code-actions-enable nil)
+  (setq-default lsp-modeline-diagnostics-enable nil))
 
 (use-package prettier)
 (require 'prettier)
@@ -275,7 +277,9 @@
 
 (use-package diminish
   :init
+  (eval-after-load "tree-sitter" '(diminish 'tree-sitter-mode))
   (eval-after-load "eldoc" '(diminish 'eldoc-mode))
+  (eval-after-load "company" '(diminish 'company-mode))
   (eval-after-load "subword" '(diminish 'subword-mode)))
 
 (use-package flycheck
@@ -319,7 +323,7 @@
          ("README\\.md$" . gfm-mode)))
 
 (use-package web-mode
-  :mode "\\.\\(html\\|js\\)$"
+  :mode "\\.html$"
   :config
   (add-hook 'web-mode-hook 'lsp)
   (setq-default
