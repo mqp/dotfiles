@@ -1,6 +1,8 @@
 [branch]
-	autoSetupMerge = true
+	autoSetupMerge = always
 	autoSetupRebase = always
+[fetch]
+    prune = true
 [push]
 	default = current
 [pull]
@@ -28,3 +30,5 @@
 	smudge = git-lfs smudge -- %f
 [github]
 	user = mqp
+[core]
+	excludesfile = /home/mqp/.gitignore
