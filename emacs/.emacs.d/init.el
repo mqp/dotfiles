@@ -24,6 +24,8 @@
 
 (prefer-coding-system 'utf-8-unix)
 (setq-default
+ completion-styles '(substring)
+ dired-listing-switches "-alh"
  initial-major-mode 'text-mode
  bidi-display-reordering nil
  echo-keystrokes 0.1
@@ -54,22 +56,52 @@
  require-final-newline t
  fit-window-to-buffer-horizontally "only"
  read-process-output-max (* 16 1024 1024)
- server-client-instructions nil)
+ server-client-instructions nil
+ read-file-name-completion-ignore-case t
+ read-buffer-completion-ignore-case t
+ completion-ignore-case t
+ )
+
+(when (file-exists-p custom-file)
+  (load custom-file))
 
 (defalias 'yes-or-no-p 'y-or-n-p)
 
 ;; set up package.el and use-package
-(require 'package)
-(setq package-native-compile t)
-(add-to-list 'package-archives '("elpa" . "https://elpa.gnu.org/packages/"))
-(add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-(unless (package-installed-p 'use-package)
-  (package-install 'use-package))
-(eval-when-compile (require 'use-package))
+;; Install straight.el
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
+
+;; Install use-package
+(straight-use-package 'use-package)
+
+;; Configure use-package to use straight.el by default
+(use-package straight :custom (straight-use-package-by-default t))
+
+;; (require 'package)
+;; (setq package-native-compile t)
+;; (add-to-list 'package-archives '("elpa" . "https://elpa.gnu.org/packages/"))
+;; (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+;; (unless (package-installed-p 'use-package)
+;;   (package-install 'use-package))
+;; (eval-when-compile (require 'use-package))
 (setq-default
  use-package-verbose t
  use-package-always-ensure t)
-(setq use-package-compute-statistics t)
+;; (setq use-package-compute-statistics t)
+
+(use-package mood-line :init (mood-line-mode))
+(set-face-attribute 'mode-line nil :box nil)
 
 (cl-letf (((symbol-function 'define-obsolete-function-alias) #'defalias))
   (use-package benchmark-init
