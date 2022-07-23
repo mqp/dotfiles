@@ -283,8 +283,9 @@
   (eval-after-load "subword" '(diminish 'subword-mode)))
 
 (use-package flycheck
-  :config
-  (global-flycheck-mode 1))
+  :custom (flycheck-disabled-checkers '(emacs-lisp-checkdoc))
+  :init
+  (global-flycheck-mode))
 
 (use-package sudo-edit
   :commands sudo-edit)
