@@ -2,10 +2,10 @@
 .DS_Store/
 *.elc
 .#*
-*
 
 !.gitignore
 !init.el
+emacs/.emacs.d/straight
 emacs/.emacs.d/.cache
 emacs/.emacs.d/.lsp-session*
 emacs/.emacs.d/elpa

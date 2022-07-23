@@ -59,12 +59,7 @@
 
 (pixel-scroll-mode)
 (use-package zenburn-theme :init (load-theme 'zenburn))
-(use-package mood-line
-  :init (mood-line-mode)
-  :config
-  (set-face-attribute 'mode-line nil :box nil)
-  (set-face-attribute 'mode-line-highlight nil :box nil)
-  (set-face-attribute 'mode-line-inactive nil :box nil))
+(use-package mood-line :init (mood-line-mode))
 
 ;; Do not allow the cursor in the minibuffer prompt
 (setq minibuffer-prompt-properties
@@ -258,7 +253,6 @@
   :init (marginalia-mode))
 
 (use-package embark
-  :ensure t
   :bind (("C-." . embark-act)
          ("M-." . embark-dwim)
          ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
@@ -270,7 +264,7 @@
                  nil
                  (window-parameters (mode-line-format . none)))))
 
-(use-package embark-consult :ensure t :after (embark consult))
+(use-package embark-consult :after (embark consult))
 
 (use-package so-long :init (global-so-long-mode))
 
@@ -289,23 +283,22 @@
   (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
 
 (use-package tree-sitter-langs
-  :ensure t
   :after tree-sitter
   :config
   (add-to-list 'tree-sitter-major-mode-language-alist '(typescript-tsx-mode . tsx))
   (tree-sitter-require 'tsx))
 
 (use-package typescript-mode
-  :ensure t
   :after tree-sitter
   :mode "\\.ts$"
+  :init
+  (define-derived-mode typescript-tsx-mode typescript-mode "TSX"
+    "Major mode for editing TSX files.")
+  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-tsx-mode))
   :config
+  (add-hook 'typescript-mode-hook 'subword-mode)
   (add-hook 'typescript-mode-hook 'lsp)
   (setq-default typescript-indent-level 2))
-
-(define-derived-mode typescript-tsx-mode typescript-mode "TSX"
-  "Major mode for editing TSX files.")
-(add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-tsx-mode))
 
 (use-package tsi
   :straight (:host github :repo "orzechowskid/tsi.el")
@@ -344,6 +337,7 @@
   :config
   (add-hook 'git-commit-setup-hook 'git-commit-turn-on-auto-fill))
 
+(use-package git-modes)
 (use-package rustic
   :defer t
   :config
