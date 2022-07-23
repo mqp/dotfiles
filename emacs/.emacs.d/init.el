@@ -60,6 +60,7 @@
  read-file-name-completion-ignore-case t
  read-buffer-completion-ignore-case t
  completion-ignore-case t
+ tab-always-indent 'complete
  )
 
 (when (file-exists-p custom-file)
@@ -109,7 +110,7 @@
     (require 'benchmark-init-modes)                                     ; explicitly required
     (add-hook 'after-init-hook #'benchmark-init/deactivate)))
 
-;; load local packages, then package.el dependencies
+;; load local packages
 (defvar local-packages-path (concat user-emacs-directory "vendor"))
 (let ((base local-packages-path))
   (add-to-list 'load-path base)
@@ -128,10 +129,6 @@
 ;; hippie-expand: at times perhaps too hip
 (delete 'try-expand-line hippie-expand-try-functions-list)
 (delete 'try-expand-list hippie-expand-try-functions-list)
-
-(defun bash ()
-  (interactive)
-  (term "/bin/bash"))
 
 (defun ashc (cmd)
   (interactive "sCall command: ")
@@ -160,8 +157,9 @@
 (add-hook 'prog-mode-hook 'electric-pair-mode)
 (add-hook 'prog-mode-hook 'electric-indent-mode)
 
-(require 'wgsl-mode)
-(add-to-list 'auto-mode-alist '("\\.wgsl$'" . wgsl-mode))
+(use-package wgsl-mode
+  :straight (:host github :repo "acowley/wgsl-mode")
+  :mode "\\.wgsl$")
 
 (require 'comint)
 ;; sets the current buffer process to not pop up an annoying notification on Emacs exit
@@ -177,23 +175,140 @@
 (require 'eldoc)
 (setq-default eldoc-idle-delay 0)
 
-(require 'ido)
-(setq-default
- ido-max-directory-size 100000
- ido-max-prospects 10
- ido-enable-flex-matching t
- ido-enable-prefix nil
- ido-enable-last-directory-history t
- ido-use-filename-at-point nil
- ido-use-url-at-point nil
- ido-use-virtual-buffers t
- ido-save-directory-list-file (concat user-emacs-directory "ido.hist"))
-(ido-mode 1)
-(ido-everywhere 1)
-
-(use-package ido-completing-read+
+(use-package ligature
+  :straight (:host github :repo "mickeynp/ligature.el")
+  :init (global-ligature-mode t)
   :config
-  (ido-ubiquitous-mode 1))
+  ;; fira code has so many ligatures but they are ugly... I only like these ones
+  (ligature-set-ligatures 'prog-mode '("/*" "*/" "//" "///" ";;"
+                                       "||" "&&" "??" "::" ">>" "<<" "++" "--")))
+
+(use-package rainbow-mode
+  :custom (rainbow-x-colors nil)
+  :hook prog-mode)
+
+(use-package vertico
+  :straight (vertico :files (:defaults "extensions/*")
+                     :includes (vertico-indexed
+                                vertico-flat
+                                vertico-grid
+                                vertico-mouse
+                                vertico-quick
+                                vertico-buffer
+                                vertico-repeat
+                                vertico-reverse
+                                vertico-directory
+                                vertico-multiform
+                                vertico-unobtrusive))
+  :init
+  (vertico-mode)
+  (vertico-multiform-mode)
+  :config
+  (setq vertico-count 10)
+  (setq vertico-multiform-commands
+      '((consult-buffer (vertico-count . 20))
+        (execute-extended-command (vertico-count . 5)))))
+
+;; Do not allow the cursor in the minibuffer prompt
+(setq minibuffer-prompt-properties
+      '(read-only t cursor-intangible t face minibuffer-prompt))
+(add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+
+(use-package consult
+  :bind (;; C-c bindings (mode-specific-map)
+         ("C-c h" . consult-history)
+         ("C-c m" . consult-mode-command)
+         ("C-c k" . consult-kmacro)
+         ;; C-x bindings (ctl-x-map)
+         ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
+         ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
+         ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
+         ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
+         ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
+         ("C-x p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
+         ;; Other custom bindings
+         ("M-y" . consult-yank-pop)                ;; orig. yank-pop
+         ("<help> a" . consult-apropos)            ;; orig. apropos-command
+         ;; M-g bindings (goto-map)
+         ("M-g e" . consult-compile-error)
+         ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
+         ("M-g g" . consult-goto-line)             ;; orig. goto-line
+         ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
+         ("M-g o" . consult-outline)               ;; Alternative: consult-org-heading
+         ("M-g m" . consult-mark)
+         ("M-g k" . consult-global-mark)
+         ("M-g i" . consult-imenu)
+         ("M-g I" . consult-imenu-multi)
+         ;; M-s bindings (search-map)
+         ("M-s d" . consult-find)
+         ("M-s D" . consult-locate)
+         ("M-s g" . consult-grep)
+         ("M-s G" . consult-git-grep)
+         ("M-s r" . consult-ripgrep)
+         ("M-s l" . consult-line)
+         ("M-s L" . consult-line-multi)
+         ("M-s m" . consult-multi-occur)
+         ("M-s k" . consult-keep-lines)
+         ("M-s u" . consult-focus-lines)
+         ;; Isearch integration
+         ("M-s e" . consult-isearch-history)
+         :map isearch-mode-map
+         ("M-e" . consult-isearch-history)         ;; orig. isearch-edit-string
+         ("M-s e" . consult-isearch-history)       ;; orig. isearch-edit-string
+         ("M-s l" . consult-line)                  ;; needed by consult-line to detect isearch
+         ("M-s L" . consult-line-multi)            ;; needed by consult-line to detect isearch
+         ;; Minibuffer history
+         :map minibuffer-local-map
+         ("M-s" . consult-history)                 ;; orig. next-matching-history-element
+         ("M-r" . consult-history))                ;; orig. previous-matching-history-element
+  :init
+  (setq xref-show-xrefs-function #'consult-xref
+        xref-show-definitions-function #'consult-xref)
+  :config
+  (consult-customize
+   consult-theme
+   :preview-key '(:debounce 0.2 any)
+   consult-ripgrep consult-git-grep consult-grep
+   consult-bookmark consult-recent-file consult-xref
+   consult--source-bookmark consult--source-recent-file
+   consult--source-project-recent-file
+   :preview-key (kbd "M-."))
+  (setq consult-narrow-key "<"))
+
+(use-package marginalia
+  :bind (:map minibuffer-local-map ("M-A" . marginalia-cycle))
+  :custom (marginalia-max-relative-age 0)
+  :init (marginalia-mode))
+
+(use-package embark
+  :ensure t
+  :bind
+  (("C-." . embark-act)
+   ("M-." . embark-dwim)
+   ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
+  :init
+  (setq prefix-help-command #'embark-prefix-help-command)
+  :config
+  ;; Hide the mode line of the Embark live/completions buffers
+  (add-to-list 'display-buffer-alist
+               '("\\`\\*Embark Collect \\(Live\\|Completions\\)\\*"
+                 nil
+                 (window-parameters (mode-line-format . none)))))
+
+(use-package embark-consult
+  :ensure t
+  :after (embark consult))
+
+;; Prefix the current candidate with “» ”. From
+;; https://github.com/minad/vertico/wiki#prefix-current-candidate-with-arrow
+(advice-add #'vertico--format-candidate :around
+            (lambda (orig cand prefix suffix index _start)
+              (setq cand (funcall orig cand prefix suffix index _start))
+              (concat
+               (if (= vertico--index index)
+                   (propertize "» " 'face 'vertico-current)
+                 "  ")
+               cand)))
 
 (require 'saveplace)
 (setq-default
@@ -221,52 +336,44 @@
 
 (setq-default css-indent-offset 2)
 
-(use-package so-long)
-(require 'so-long)
-(global-so-long-mode 1)
+(use-package so-long :init (global-so-long-mode))
 
 (require 'fsr-mode)
 (add-to-list 'auto-mode-alist '("firestore\\.rules$" . fsr-mode))
 
-(use-package typescript-mode
-  :after tree-sitter
-  :mode "\\.\\(ts\\|tsx\\)$"
+(use-package vterm
   :config
-  (define-derived-mode typescript-tsx-mode typescript-mode "TSX"
-    "Major mode for editing TSX files.")
-  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-tsx-mode))
-  (tree-sitter-require 'tsx)
-  (add-to-list 'tree-sitter-major-mode-language-alist '(typescript-tsx-mode . tsx))
-  (add-hook 'typescript-mode-hook 'lsp)
-  (setq-default typescript-indent-level 2))
-
-(use-package amx
-  :config
-  (amx-mode 1))
+  (setq-default vterm-buffer-name-string "vterm %s"
+                vterm-always-compile-module t
+                vterm-max-scrollback 10000))
 
 (use-package tree-sitter
-  :ensure t
+  :init (global-tree-sitter-mode)
   :config
-  ;; activate tree-sitter on any buffer containing code for which it has a parser available
-  (global-tree-sitter-mode)
-  ;; you can easily see the difference tree-sitter-hl-mode makes for python, ts or tsx
-  ;; by switching on and off
   (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
 
 (use-package tree-sitter-langs
   :ensure t
-  :after tree-sitter)
+  :after tree-sitter
+  :config
+  (add-to-list 'tree-sitter-major-mode-language-alist '(typescript-tsx-mode . tsx))
+  (tree-sitter-require 'tsx))
 
-(use-package quelpa)
-(quelpa
- '(quelpa-use-package
-   :fetcher git
-   :url "https://github.com/quelpa/quelpa-use-package.git"))
-(require 'quelpa-use-package)
+(use-package typescript-mode
+  :ensure t
+  :after tree-sitter
+  :mode "\\.ts$"
+  :config
+  (add-hook 'typescript-mode-hook 'lsp)
+  (setq-default typescript-indent-level 2))
+
+(define-derived-mode typescript-tsx-mode typescript-mode "TSX"
+  "Major mode for editing TSX files.")
+(add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-tsx-mode))
 
 (use-package tsi
+  :straight (:host github :repo "orzechowskid/tsi.el")
   :after tree-sitter
-  :quelpa (tsi :fetcher github :repo "orzechowskid/tsi.el")
   ;; define autoload definitions which when actually invoked will cause package to be loaded
   :commands (tsi-typescript-mode tsi-json-mode tsi-css-mode)
   :init
@@ -278,25 +385,28 @@
 (use-package lsp-mode
   :commands lsp
   :custom
-  (setq-default lsp-clients-typescript-server-args '("--stdio" "--tsserver-log-file" "/dev/stderr"))
+  (lsp-completion-provider :none)
+  (lsp-clients-typescript-server-args '("--stdio" "--tsserver-log-file" "/dev/stderr"))
   :config
-  (add-to-list 'lsp-file-watch-ignored-directories "[/\\\\]\\.next\\'")
+  (defvar lsp-file-watch-ignored-directories-additional nil
+    "Additional ignored directories added to lsp-file-watch-ignored-directories.")
+  (put 'lsp-file-watch-ignored-directories-additional 'safe-local-variable #'lsp--string-listp)
+  (add-function :around (symbol-function 'lsp-file-watch-ignored-directories)
+                (lambda (orig)
+                  (print "appending")
+                  (append lsp-file-watch-ignored-directories-additional (funcall orig))))
+  (add-to-list 'lsp-file-watch-ignored-directories "/\\.docusaurus$")
+  (add-to-list 'lsp-file-watch-ignored-directories "/\\.next$")
   (setq-default lsp-eslint-trace-server t)
   (setq-default lsp-enable-snippet nil)
   (setq-default lsp-modeline-code-actions-enable nil)
   (setq-default lsp-modeline-diagnostics-enable nil))
 
-(use-package prettier)
-(require 'prettier)
-(add-hook 'after-init-hook #'global-prettier-mode)
+(use-package prettier :init (global-prettier-mode))
 
 (use-package magit
-  :defer t
   :config
-  (add-hook 'git-commit-setup-hook 'git-commit-turn-on-auto-fill)
-  (setq-default magit-completing-read-function 'magit-ido-completing-read))
-
-(use-package forge :after magit)
+  (add-hook 'git-commit-setup-hook 'git-commit-turn-on-auto-fill))
 
 (use-package rustic
   :defer t
@@ -307,48 +417,31 @@
    lsp-enable-symbol-highlighting nil
    rustic-format-on-save nil))
 
-(use-package diminish
-  :init
-  (eval-after-load "tree-sitter" '(diminish 'tree-sitter-mode))
-  (eval-after-load "eldoc" '(diminish 'eldoc-mode))
-  (eval-after-load "company" '(diminish 'company-mode))
-  (eval-after-load "subword" '(diminish 'subword-mode)))
-
 (use-package flycheck
   :custom (flycheck-disabled-checkers '(emacs-lisp-checkdoc))
-  :init
-  (global-flycheck-mode))
+  :init (global-flycheck-mode))
 
-(use-package sudo-edit
-  :commands sudo-edit)
+(use-package sudo-edit :commands sudo-edit)
 
-(use-package yaml-mode
-  :mode "\\.\\(yaml\\|yml\\)$")
+(use-package yaml-mode :mode "\\.\\(yaml\\|yml\\)$")
 
-(use-package company
-  :config
-  (setq-default company-idle-delay nil)
-  (add-hook 'after-init-hook 'global-company-mode)
-  (global-set-key (kbd "TAB") #'company-indent-or-complete-common))
+(use-package corfu
+  :custom (corfu-cycle t)
+  :init (global-corfu-mode))
 
 (use-package popup)
 
 (use-package nginx-mode)
 
-(use-package dockerfile-mode
-  :mode "^Dockerfile")
+(use-package dockerfile-mode :mode "^Dockerfile")
 
-(use-package php-mode
-  :mode "\\.\\(php\\|inc\\)$")
+(use-package php-mode :mode "\\.\\(php\\|inc\\)$")
 
-(use-package csharp-mode
-  :mode "\\.cs$")
+(use-package csharp-mode :mode "\\.cs$")
 
-(use-package lua-mode
-  :mode "\\.lua$")
+(use-package lua-mode :mode "\\.lua$")
 
-(use-package glsl-mode
-  :mode "\\.\\(glsl\\|vert\\|frag\\)$")
+(use-package glsl-mode :mode "\\.\\(glsl\\|vert\\|frag\\)$")
 
 (use-package markdown-mode
   :mode (("\\.md$" . markdown-mode)
@@ -374,8 +467,7 @@
   (setq-default
    flycheck-disabled-checkers (append flycheck-disabled-checkers '(json-jsonlist))))
 
-(use-package handlebars-mode
-  :mode "\\.hbs$")
+(use-package handlebars-mode :mode "\\.hbs$")
 
 (use-package ssh-config-mode
   :mode ((".ssh/config\\'" . ssh-config-mode)
