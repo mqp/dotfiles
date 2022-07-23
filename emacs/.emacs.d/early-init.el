@@ -19,9 +19,6 @@
 
 ;; set up visual frame defaults before any frame is created
 (add-to-list 'default-frame-alist '(font . "Fira Code-11"))
-(set-face-attribute 'mode-line nil :box nil)
-(set-face-attribute 'mode-line-highlight nil :box nil)
-(set-face-attribute 'mode-line-inactive nil :box nil)
 (setq-default frame-title-format
               '(:eval
                 (if (buffer-file-name)

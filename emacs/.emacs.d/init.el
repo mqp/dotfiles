@@ -60,6 +60,12 @@
 (pixel-scroll-mode)
 (use-package zenburn-theme :init (load-theme 'zenburn))
 (use-package mood-line :init (mood-line-mode))
+(set-face-attribute 'header-line nil :box nil)
+(set-face-attribute 'mode-line nil :box nil)
+(set-face-attribute 'mode-line-highlight nil :box nil)
+(set-face-attribute 'mode-line-inactive nil :box nil)
+(set-face-foreground 'vertical-border (face-attribute 'default :background))
+(set-face-background 'vertical-border (face-attribute 'default :background))
 
 ;; Do not allow the cursor in the minibuffer prompt
 (setq minibuffer-prompt-properties
@@ -362,7 +368,9 @@
 (use-package yaml-mode :mode "\\.\\(yaml\\|yml\\)$")
 
 (use-package corfu
-  :custom (corfu-cycle t)
+  :custom
+  (corfu-cycle t)
+  (corfu-echo-documentation t)
   :init (global-corfu-mode))
 
 (use-package popup)
