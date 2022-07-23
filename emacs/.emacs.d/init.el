@@ -1,4 +1,4 @@
-;;; -*- no-byte-compile: t -*-
+;;; -*- no-byte-compile: t; lexical-binding: t; -*-
 
 (setq-default gc-cons-threshold (* 256 1024 1024))
 

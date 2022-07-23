@@ -1,4 +1,5 @@
 (require 'tls)
+;;; -*- lexical-binding: t; -*-
 
 (defun revert-all-buffers ()
   "Refreshes all open buffers from their respective files."
