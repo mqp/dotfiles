@@ -1,28 +1,6 @@
 ;;; -*- no-byte-compile: t; lexical-binding: t; -*-
 
-(setq-default gc-cons-threshold (* 256 1024 1024))
-
-;; turn off mouse interface early in startup to avoid momentary display
-(if (display-graphic-p) (tool-bar-mode -1))
-(if (display-graphic-p) (scroll-bar-mode -1))
-(menu-bar-mode -1)
-(pixel-scroll-mode)
-
-(setq-default frame-title-format
-      '(:eval
-        (if (buffer-file-name)
-            (replace-regexp-in-string
-             (concat "/home/" user-login-name) "~" buffer-file-name)
-          "%b")))
-(set-frame-font "Fira Code-11")
-(add-to-list 'default-frame-alist '(font . "Fira Code-11"))
-
-(add-to-list 'custom-theme-load-path "~/.emacs.d/themes/")
-(defvar zenburn-override-colors-alist
-  `(("zenburn-bg" . nil)))
-(load-theme 'zenburn t)
-
-(prefer-coding-system 'utf-8-unix)
+(defalias 'yes-or-no-p 'y-or-n-p)
 (setq-default
  completion-styles '(substring)
  dired-listing-switches "-alh"
@@ -60,71 +38,40 @@
  read-file-name-completion-ignore-case t
  read-buffer-completion-ignore-case t
  completion-ignore-case t
- tab-always-indent 'complete
- )
+ tab-always-indent 'complete)
 
-(when (file-exists-p custom-file)
-  (load custom-file))
+(global-set-key (kbd "C-h a") 'apropos)
+(global-set-key (kbd "M-f") 'forward-word)
+(global-set-key (kbd "M-b") 'backward-word)
+(global-set-key (kbd "M-/") 'hippie-expand)
+(global-set-key (kbd "C-c q") 'join-line)
+(global-set-key (kbd "C-+") 'text-scale-increase)
+(global-set-key (kbd "C--") 'text-scale-decrease)
+(global-set-key (kbd "C-s") 'isearch-forward-regexp)
+(global-set-key (kbd "C-r") 'isearch-backward-regexp)
+(global-set-key (kbd "C-M-s") 'isearch-forward)
+(global-set-key (kbd "C-M-r") 'isearch-backward)
+(global-set-key (kbd "C-x g") 'magit-status)
 
-(defalias 'yes-or-no-p 'y-or-n-p)
-
-;; set up package.el and use-package
-;; Install straight.el
-(defvar bootstrap-version)
-(let ((bootstrap-file
-       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
-      (bootstrap-version 5))
-  (unless (file-exists-p bootstrap-file)
-    (with-current-buffer
-        (url-retrieve-synchronously
-         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-         'silent 'inhibit-cookies)
-      (goto-char (point-max))
-      (eval-print-last-sexp)))
-  (load bootstrap-file nil 'nomessage))
-
-;; Install use-package
-(straight-use-package 'use-package)
-
-;; Configure use-package to use straight.el by default
-(use-package straight :custom (straight-use-package-by-default t))
-
-;; (require 'package)
-;; (setq package-native-compile t)
-;; (add-to-list 'package-archives '("elpa" . "https://elpa.gnu.org/packages/"))
-;; (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-;; (unless (package-installed-p 'use-package)
-;;   (package-install 'use-package))
-;; (eval-when-compile (require 'use-package))
-(setq-default
- use-package-verbose t
- use-package-always-ensure t)
-;; (setq use-package-compute-statistics t)
-
-(use-package mood-line :init (mood-line-mode))
-(set-face-attribute 'mode-line nil :box nil)
-
-(cl-letf (((symbol-function 'define-obsolete-function-alias) #'defalias))
-  (use-package benchmark-init
-    :config
-    (require 'benchmark-init-modes)                                     ; explicitly required
-    (add-hook 'after-init-hook #'benchmark-init/deactivate)))
-
-;; load local packages
-(defvar local-packages-path (concat user-emacs-directory "vendor"))
-(let ((base local-packages-path))
-  (add-to-list 'load-path base)
-  (dolist (f (directory-files base))
-    (let ((name (concat base "/" f)))
-      (when (and (file-directory-p name)
-                 (not (equal f ".."))
-                 (not (equal f ".")))
-        (add-to-list 'load-path name)))))
-
-;; miscellaneous config
+(when (file-exists-p custom-file) (load custom-file))
+(load (concat user-emacs-directory "package-bootstrap"))
 (load (concat user-emacs-directory "utils"))
+
+(pixel-scroll-mode)
+(use-package zenburn-theme :init (load-theme 'zenburn))
+(use-package mood-line
+  :init (mood-line-mode)
+  :config
+  (set-face-attribute 'mode-line nil :box nil)
+  (set-face-attribute 'mode-line-highlight nil :box nil)
+  (set-face-attribute 'mode-line-inactive nil :box nil))
+
+;; Do not allow the cursor in the minibuffer prompt
+(setq minibuffer-prompt-properties
+      '(read-only t cursor-intangible t face minibuffer-prompt))
+(add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
-(add-to-list 'auto-mode-alist '("\\.zsh\\'" . shell-script-mode))
 
 ;; hippie-expand: at times perhaps too hip
 (delete 'try-expand-line hippie-expand-try-functions-list)
@@ -137,7 +84,6 @@
     (async-shell-command cmd output-buffer error-buffer)))
 
 ;; package-specific configs follow
-
 (require 'shell)
 (add-hook 'shell-mode-hook 'ansi-color-for-comint-mode-on)
 
@@ -157,10 +103,6 @@
 (add-hook 'prog-mode-hook 'electric-pair-mode)
 (add-hook 'prog-mode-hook 'electric-indent-mode)
 
-(use-package wgsl-mode
-  :straight (:host github :repo "acowley/wgsl-mode")
-  :mode "\\.wgsl$")
-
 (require 'comint)
 ;; sets the current buffer process to not pop up an annoying notification on Emacs exit
 (add-hook
@@ -174,6 +116,36 @@
 
 (require 'eldoc)
 (setq-default eldoc-idle-delay 0)
+
+(require 'saveplace)
+(setq-default
+ save-place-file (concat user-emacs-directory "places")
+ save-place-mode 1)
+
+(require 'recentf)
+(add-to-list 'recentf-exclude "^/\\(?:ssh\\|su\\|sudo\\)?:")
+(setq-default
+ recentf-max-saved-items 500
+ recentf-max-menu-items 15
+ recentf-save-file (concat user-emacs-directory "recentf"))
+(recentf-mode 1)
+
+(require 'savehist)
+(setq-default
+ savehist-additional-variables '(search ring regexp-search-ring)
+ savehist-autosave-interval 60
+ savehist-file (concat user-emacs-directory "savehist"))
+(savehist-mode 1)
+
+(require 'paren)
+(setq-default show-paren-style 'parenthesis)
+(show-paren-mode 1)
+
+(setq-default css-indent-offset 2)
+
+(use-package wgsl-mode
+  :straight (:host github :repo "acowley/wgsl-mode")
+  :mode "\\.wgsl$")
 
 (use-package ligature
   :straight (:host github :repo "mickeynp/ligature.el")
@@ -207,12 +179,17 @@
   (setq vertico-count 10)
   (setq vertico-multiform-commands
       '((consult-buffer (vertico-count . 20))
-        (execute-extended-command (vertico-count . 5)))))
-
-;; Do not allow the cursor in the minibuffer prompt
-(setq minibuffer-prompt-properties
-      '(read-only t cursor-intangible t face minibuffer-prompt))
-(add-hook 'minibuffer-setup-hook #'cursor-intangible-mode)
+        (execute-extended-command (vertico-count . 5))))
+  ;; Prefix the current candidate with “» ”. From
+  ;; https://github.com/minad/vertico/wiki#prefix-current-candidate-with-arrow
+  (advice-add #'vertico--format-candidate :around
+              (lambda (orig cand prefix suffix index _start)
+                (setq cand (funcall orig cand prefix suffix index _start))
+                (concat
+                 (if (= vertico--index index)
+                     (propertize "» " 'face 'vertico-current)
+                   "  ")
+                 cand))))
 
 (use-package consult
   :bind (;; C-c bindings (mode-specific-map)
@@ -282,12 +259,10 @@
 
 (use-package embark
   :ensure t
-  :bind
-  (("C-." . embark-act)
-   ("M-." . embark-dwim)
-   ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
-  :init
-  (setq prefix-help-command #'embark-prefix-help-command)
+  :bind (("C-." . embark-act)
+         ("M-." . embark-dwim)
+         ("C-h B" . embark-bindings)) ;; alternative for `describe-bindings'
+  :init (setq prefix-help-command #'embark-prefix-help-command)
   :config
   ;; Hide the mode line of the Embark live/completions buffers
   (add-to-list 'display-buffer-alist
@@ -295,46 +270,7 @@
                  nil
                  (window-parameters (mode-line-format . none)))))
 
-(use-package embark-consult
-  :ensure t
-  :after (embark consult))
-
-;; Prefix the current candidate with “» ”. From
-;; https://github.com/minad/vertico/wiki#prefix-current-candidate-with-arrow
-(advice-add #'vertico--format-candidate :around
-            (lambda (orig cand prefix suffix index _start)
-              (setq cand (funcall orig cand prefix suffix index _start))
-              (concat
-               (if (= vertico--index index)
-                   (propertize "» " 'face 'vertico-current)
-                 "  ")
-               cand)))
-
-(require 'saveplace)
-(setq-default
- save-place-file (concat user-emacs-directory "places")
- save-place-mode 1)
-
-(require 'recentf)
-(add-to-list 'recentf-exclude "^/\\(?:ssh\\|su\\|sudo\\)?:")
-(setq-default
- recentf-max-saved-items 500
- recentf-max-menu-items 15
- recentf-save-file (concat user-emacs-directory "recentf"))
-(recentf-mode 1)
-
-(require 'savehist)
-(setq-default
- savehist-additional-variables '(search ring regexp-search-ring)
- savehist-autosave-interval 60
- savehist-file (concat user-emacs-directory "savehist"))
-(savehist-mode 1)
-
-(require 'paren)
-(setq-default show-paren-style 'parenthesis)
-(show-paren-mode 1)
-
-(setq-default css-indent-offset 2)
+(use-package embark-consult :ensure t :after (embark consult))
 
 (use-package so-long :init (global-so-long-mode))
 
@@ -476,5 +412,3 @@
          ("authorized_keys2?\\'" . ssh-authorized-keys-mode))
   :config
   (add-hook 'ssh-config-mode-hook 'turn-on-font-lock))
-
-(load (concat user-emacs-directory "bindings/bindings-general"))
