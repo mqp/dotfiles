@@ -173,8 +173,9 @@
   :config
   (setq vertico-count 10)
   (setq vertico-multiform-commands
-      '((consult-buffer (vertico-count . 20))
-        (execute-extended-command (vertico-count . 5))))
+                '((consult-buffer (vertico-count . 20))
+                  (execute-extended-command flat)
+                  ("magit-" flat)))
   ;; Prefix the current candidate with “» ”. From
   ;; https://github.com/minad/vertico/wiki#prefix-current-candidate-with-arrow
   (advice-add #'vertico--format-candidate :around
@@ -185,6 +186,10 @@
                      (propertize "» " 'face 'vertico-current)
                    "  ")
                  cand))))
+
+(use-package vertico-flat
+  :after vertico
+  :bind (:map vertico-flat-map ("TAB" . vertico-next)))
 
 (use-package consult
   :bind (;; C-c bindings (mode-specific-map)
@@ -338,6 +343,7 @@
   (add-hook 'git-commit-setup-hook 'git-commit-turn-on-auto-fill))
 
 (use-package git-modes)
+
 (use-package rustic
   :defer t
   :config
