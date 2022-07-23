@@ -334,7 +334,6 @@
 (use-package popup)
 
 (use-package nginx-mode)
-(use-package systemd)
 
 (use-package dockerfile-mode
   :mode "^Dockerfile")
