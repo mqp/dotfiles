@@ -420,3 +420,6 @@
          ("authorized_keys2?\\'" . ssh-authorized-keys-mode))
   :config
   (add-hook 'ssh-config-mode-hook 'turn-on-font-lock))
+
+(use-package sql-indent
+  :hook sql-mode)
