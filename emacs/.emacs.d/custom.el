@@ -14,7 +14,8 @@
            (rainbow-mode 1))
      (lsp-file-watch-ignored-directories-additional "/common/lib$" "/docs/build$" "/functions/lib$" "/functions/dist$" "/functions/firestore_export$")
      (lsp-file-watch-ignored-directories-additional "[////]\\lib\\'")
-     (lsp-file-watch-ignored-directories-additional "[////]\\.next\\'"))))
+     (lsp-file-watch-ignored-directories-additional "[////]\\.next\\'")))
+ '(warning-suppress-types '((comp))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
