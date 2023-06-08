@@ -6,6 +6,9 @@
 ;; Disable package.el in favor of straight.el
 (setq package-enable-at-startup nil)
 
+;; Eliminates native comp warnings when loading files
+(setq native-comp-async-report-warnings-errors nil)
+
 ;; UTF-8 everywhere by default
 (set-language-environment "UTF-8")
 

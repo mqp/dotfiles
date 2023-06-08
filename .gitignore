@@ -6,6 +6,7 @@
 !.gitignore
 !init.el
 emacs/.emacs.d/straight
+emacs/.emacs.d/tree-sitter/
 emacs/.emacs.d/.cache
 emacs/.emacs.d/.lsp-session*
 emacs/.emacs.d/elpa

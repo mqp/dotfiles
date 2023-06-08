@@ -40,6 +40,7 @@
  completion-ignore-case t
  tab-always-indent 'complete)
 
+
 (global-set-key (kbd "C-h a") 'apropos)
 (global-set-key (kbd "M-f") 'forward-word)
 (global-set-key (kbd "M-b") 'backward-word)
@@ -141,6 +142,66 @@
 (require 'paren)
 (setq-default show-paren-style 'parenthesis)
 (show-paren-mode 1)
+
+(setq treesit-language-source-alist
+  '((bash "https://github.com/tree-sitter/tree-sitter-bash")
+    (c "https://github.com/tree-sitter/tree-sitter-c")
+    (cpp "https://github.com/tree-sitter/tree-sitter-cpp")
+    (css "https://github.com/tree-sitter/tree-sitter-css")
+    (elisp "https://github.com/Wilfred/tree-sitter-elisp")
+    (html "https://github.com/tree-sitter/tree-sitter-html")
+    (javascript "https://github.com/tree-sitter/tree-sitter-javascript")
+    (json "https://github.com/tree-sitter/tree-sitter-json")
+    (lua "https://github.com/Azganoth/tree-sitter-lua")
+    (make "https://github.com/alemuller/tree-sitter-make")
+    (markdown "https://github.com/ikatyang/tree-sitter-markdown")
+    (python "https://github.com/tree-sitter/tree-sitter-python")
+    (rust "https://github.com/tree-sitter/tree-sitter-rust")
+    (toml "https://github.com/tree-sitter/tree-sitter-toml")
+    (sql "https://github.com/m-novikov/tree-sitter-sql")
+    (tsx . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "tsx/src"))
+    (typescript . ("https://github.com/tree-sitter/tree-sitter-typescript" "master" "typescript/src"))
+    (yaml "https://github.com/ikatyang/tree-sitter-yaml")))
+
+(defun treesit-install-all-languages ()
+    "Install all languages specified by `treesit-language-source-alist'."
+    (interactive)
+    (let ((languages (mapcar 'car treesit-language-source-alist)))
+      (dolist (lang languages)
+	      (treesit-install-language-grammar lang)
+	      (message "`%s' parser was installed." lang)
+	      (sit-for 0.75))))
+
+
+(add-to-list 'major-mode-remap-alist '(javascript-mode . js-ts-mode))
+(add-to-list 'major-mode-remap-alist '(html-mode . html-ts-mode))
+(add-to-list 'major-mode-remap-alist '(conf-toml-mode . toml-ts-mode))
+(add-to-list 'major-mode-remap-alist '(js-json-mode . json-ts-mode))
+(add-to-list 'major-mode-remap-alist '(rust-mode . rust-ts-mode))
+
+(require 'eglot)
+(setq-default eglot-ignored-server-capabilities '(:inlayHintProvider))
+
+(require 'typescript-ts-mode)
+(add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
+(add-to-list 'auto-mode-alist '("\\.tsx\\'" . tsx-ts-mode))
+(add-hook 'typescript-ts-mode-hook 'subword-mode)
+(add-hook 'typescript-ts-mode-hook 'eglot-ensure)
+(add-hook 'tsx-ts-mode-hook 'subword-mode)
+(add-hook 'tsx-ts-mode-hook 'eglot-ensure)
+(setq-default typescript-indent-level 2)
+
+(require 'json-ts-mode)
+  ;; disable json-jsonlist checking for json files
+  ;; (setq-default
+  ;;  flycheck-disabled-checkers (append flycheck-disabled-checkers '(json-jsonlist))))
+
+(require 'yaml-ts-mode)
+(add-to-list 'auto-mode-alist '("\\.\\(yaml\\|yml\\)\\'" . yaml-ts-mode))
+
+(use-package markdown-mode
+  :mode (("\\.md$" . markdown-mode)
+         ("README\\.md$" . gfm-mode)))
 
 (setq-default css-indent-offset 2)
 
@@ -255,7 +316,7 @@
    consult-bookmark consult-recent-file consult-xref
    consult--source-bookmark consult--source-recent-file
    consult--source-project-recent-file
-   :preview-key (kbd "M-."))
+   :preview-key "M-.")
   (setq consult-narrow-key "<"))
 
 (use-package marginalia
@@ -288,61 +349,31 @@
                 vterm-always-compile-module t
                 vterm-max-scrollback 10000))
 
-(use-package tree-sitter
-  :init (global-tree-sitter-mode)
-  :config
-  (add-hook 'tree-sitter-after-on-hook #'tree-sitter-hl-mode))
+;; (use-package lsp-mode
+;;   :commands lsp
+;;   :custom
+;;   (lsp-completion-provider :none)
+;;   (lsp-clients-typescript-server-args '("--stdio" "--tsserver-log-file" "/dev/stderr"))
+;;   :config
+;;   (defvar lsp-file-watch-ignored-directories-additional nil
+;;     "Additional ignored directories added to lsp-file-watch-ignored-directories.")
+;;   (put 'lsp-file-watch-ignored-directories-additional 'safe-local-variable #'lsp--string-listp)
+;;   (add-function :around (symbol-function 'lsp-file-watch-ignored-directories)
+;;                 (lambda (orig)
+;;                   (print "appending")
+;;                   (append lsp-file-watch-ignored-directories-additional (funcall orig))))
+;;   (add-to-list 'lsp-file-watch-ignored-directories "/\\.docusaurus$")
+;;   (add-to-list 'lsp-file-watch-ignored-directories "/\\.next$")
+;;   (setq-default lsp-eslint-trace-server t)
+;;   (setq-default lsp-enable-snippet nil)
+;;   (setq-default lsp-modeline-code-actions-enable nil)
+;;   (setq-default lsp-modeline-diagnostics-enable nil))
 
-(use-package tree-sitter-langs
-  :after tree-sitter
-  :config
-  (add-to-list 'tree-sitter-major-mode-language-alist '(typescript-tsx-mode . tsx))
-  (tree-sitter-require 'tsx))
-
-(use-package typescript-mode
-  :after tree-sitter
-  :mode "\\.ts$"
+(use-package prettier
   :init
-  (define-derived-mode typescript-tsx-mode typescript-mode "TSX"
-    "Major mode for editing TSX files.")
-  (add-to-list 'auto-mode-alist '("\\.tsx\\'" . typescript-tsx-mode))
-  :config
-  (add-hook 'typescript-mode-hook 'subword-mode)
-  (add-hook 'typescript-mode-hook 'lsp)
-  (setq-default typescript-indent-level 2))
-
-(use-package tsi
-  :straight (:host github :repo "orzechowskid/tsi.el")
-  :after tree-sitter
-  ;; define autoload definitions which when actually invoked will cause package to be loaded
-  :commands (tsi-typescript-mode tsi-json-mode tsi-css-mode)
-  :init
-  (add-hook 'typescript-mode-hook (lambda () (tsi-typescript-mode 1)))
-  (add-hook 'json-mode-hook (lambda () (tsi-json-mode 1)))
-  (add-hook 'css-mode-hook (lambda () (tsi-css-mode 1)))
-  (add-hook 'scss-mode-hook (lambda () (tsi-scss-mode 1))))
-
-(use-package lsp-mode
-  :commands lsp
-  :custom
-  (lsp-completion-provider :none)
-  (lsp-clients-typescript-server-args '("--stdio" "--tsserver-log-file" "/dev/stderr"))
-  :config
-  (defvar lsp-file-watch-ignored-directories-additional nil
-    "Additional ignored directories added to lsp-file-watch-ignored-directories.")
-  (put 'lsp-file-watch-ignored-directories-additional 'safe-local-variable #'lsp--string-listp)
-  (add-function :around (symbol-function 'lsp-file-watch-ignored-directories)
-                (lambda (orig)
-                  (print "appending")
-                  (append lsp-file-watch-ignored-directories-additional (funcall orig))))
-  (add-to-list 'lsp-file-watch-ignored-directories "/\\.docusaurus$")
-  (add-to-list 'lsp-file-watch-ignored-directories "/\\.next$")
-  (setq-default lsp-eslint-trace-server t)
-  (setq-default lsp-enable-snippet nil)
-  (setq-default lsp-modeline-code-actions-enable nil)
-  (setq-default lsp-modeline-diagnostics-enable nil))
-
-(use-package prettier :init (global-prettier-mode))
+  (setq-default prettier-mode-sync-config-flag nil)
+  (add-hook 'js-ts-mode-hook 'prettier-mode)
+  (add-hook 'json-ts-mode-hook 'prettier-mode))
 
 (use-package magit
   :config
@@ -353,19 +384,17 @@
 (use-package rustic
   :defer t
   :config
-  (add-hook 'rust-mode-hook 'lsp)
+  (add-hook 'rust-mode-hook 'eglot-ensure)
   (setq-default
-   lsp-rust-analyzer-proc-macro-enable t
-   lsp-enable-symbol-highlighting nil
-   rustic-format-on-save nil))
+   rustic-lsp-client 'eglot
+   rustic-format-trigger 'on-save))
+
 
 (use-package flycheck
   :custom (flycheck-disabled-checkers '(emacs-lisp-checkdoc))
   :init (global-flycheck-mode))
 
 (use-package sudo-edit :commands sudo-edit)
-
-(use-package yaml-mode :mode "\\.\\(yaml\\|yml\\)$")
 
 (use-package corfu
   :custom
@@ -379,22 +408,11 @@
 
 (use-package dockerfile-mode :mode "^Dockerfile")
 
-(use-package php-mode :mode "\\.\\(php\\|inc\\)$")
-
-(use-package csharp-mode :mode "\\.cs$")
-
-(use-package lua-mode :mode "\\.lua$")
-
 (use-package glsl-mode :mode "\\.\\(glsl\\|vert\\|frag\\)$")
-
-(use-package markdown-mode
-  :mode (("\\.md$" . markdown-mode)
-         ("README\\.md$" . gfm-mode)))
 
 (use-package web-mode
   :mode "\\.html$"
   :config
-  (add-hook 'web-mode-hook 'lsp)
   (setq-default
    web-mode-code-indent-offset 2
    web-mode-markup-indent-offset 2
@@ -402,14 +420,6 @@
    web-mode-ac-sources-alist
    '(("css" . (ac-source-css-property))
      ("html" . (ac-source-words-in-buffer ac-source-abbrev)))))
-
-(use-package json-mode
-  :mode "\\.json$"
-  :config
-  (add-hook 'json-mode-hook 'lsp)
-  ;; disable json-jsonlist checking for json files
-  (setq-default
-   flycheck-disabled-checkers (append flycheck-disabled-checkers '(json-jsonlist))))
 
 (use-package handlebars-mode :mode "\\.hbs$")
 
