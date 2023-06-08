@@ -6,7 +6,6 @@ Xft.hintstyle: hintsmedium
 Xft.hinting: 1
 Xft.rgba: rgb
 
-Emacs*.geometry: 120x40
 Emacs*.background: #3F3F3F
 Emacs*.pane.menubar.shadowThickness: 1
 Emacs*.pane.menubar.margin: 1
@@ -15,7 +14,9 @@ Emacs*.menuBar: off
 Emacs*.verticalScrollBars: off
 Emacs*.cursorColor: white
 
-URxvt*.geometry: 120x40
+! https://gitlab.alpinelinux.org/alpine/aports/-/issues/14525
+URxvt*.geometry: 400x400
+
 URxvt*.depth: 32
 URxvt*.foreground: #FFFFFF
 URxvt*.background: [90]#000000
