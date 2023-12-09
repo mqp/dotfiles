@@ -17,7 +17,7 @@ set $up k
 set $right l
 
 # Your preferred terminal emulator
-set $term urxvt
+set $term foot
 set $editor "emacsclient -nc"
 set $browser "firefox"
 
@@ -33,8 +33,6 @@ input 1:1:AT_Translated_Set_2_keyboard {
 
 ### Output configuration
 output * bg ~/docs/pictures/wallpaper-sollux.jpg fill
-output eDP-1 pos 0 0 res 1920x1080 subpixel rgb
-output HDMI-A-1 pos 1920 0 res 3440x1440 subpixel rgb
 
 ### Key bindings
 #

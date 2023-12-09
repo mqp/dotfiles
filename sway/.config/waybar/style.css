@@ -42,7 +42,7 @@
 }
 
 #clock, #battery, #network, #pulseaudio {
-  font-family: "Ubuntu Nerd Font";
+  font-family: "Symbols Nerd Font";
 }
 
 #pulseaudio.muted {
