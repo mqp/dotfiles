@@ -1,0 +1,66 @@
+* {
+  font-family: "Roboto";
+  font-size: 14px;
+}
+
+#waybar {
+  background: rgba(0, 0, 20, 0.8);
+  color: white;
+}
+
+#window {
+  margin: 0 30px;
+  font-weight: bold;
+}
+
+#workspaces button {
+  padding: 0 5px;
+  color: white;
+  border: none;
+  border-radius: 0;
+  border-top: 2px solid transparent;
+}
+
+#workspaces button.focused {
+  color: #c9545d;
+  border-top: 2px solid #c9545d;
+}
+
+#workspaces button:hover {
+  background: transparent;
+  box-shadow: none;
+  text-shadow: none;
+}
+
+#mode {
+  background: #64727D;
+  border-top: 3px solid white;
+}
+
+#clock, #battery, #network, #pulseaudio, #tray, #mode {
+  margin: 0 4px 0 15px;
+}
+
+#clock, #battery, #network, #pulseaudio {
+  font-family: "Ubuntu Nerd Font";
+}
+
+#pulseaudio.muted {
+  color: #888888;
+}
+
+#clock {
+  font-weight: bold;
+}
+
+#battery.discharging.warning {
+  color: orange;
+}
+
+#battery.discharging.critical {
+  color: red;
+}
+
+#network.disconnected {
+  color: red;
+}
