@@ -192,9 +192,6 @@
 (setq-default typescript-indent-level 2)
 
 (require 'json-ts-mode)
-  ;; disable json-jsonlist checking for json files
-  ;; (setq-default
-  ;;  flycheck-disabled-checkers (append flycheck-disabled-checkers '(json-jsonlist))))
 
 (require 'yaml-ts-mode)
 (add-to-list 'auto-mode-alist '("\\.\\(yaml\\|yml\\)\\'" . yaml-ts-mode))
@@ -382,17 +379,11 @@
 (use-package git-modes)
 
 (use-package rustic
-  :defer t
   :config
-  (add-hook 'rust-mode-hook 'eglot-ensure)
+  (add-to-list 'auto-mode-alist '("\\.rs$" . rustic-mode))
   (setq-default
    rustic-lsp-client 'eglot
    rustic-format-trigger 'on-save))
-
-
-(use-package flycheck
-  :custom (flycheck-disabled-checkers '(emacs-lisp-checkdoc))
-  :init (global-flycheck-mode))
 
 (use-package sudo-edit :commands sudo-edit)
 
