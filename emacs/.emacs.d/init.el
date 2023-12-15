@@ -38,33 +38,41 @@
  read-file-name-completion-ignore-case t
  read-buffer-completion-ignore-case t
  completion-ignore-case t
- tab-always-indent 'complete)
+ tab-always-indent 'complete
+ line-spacing 0
+ electric-pair-inhibit-predicate 'electric-pair-conservative-inhibit
+ )
 
 
-(global-set-key (kbd "C-h a") 'apropos)
-(global-set-key (kbd "M-f") 'forward-word)
-(global-set-key (kbd "M-b") 'backward-word)
-(global-set-key (kbd "M-/") 'hippie-expand)
-(global-set-key (kbd "C-c q") 'join-line)
-(global-set-key (kbd "C-+") 'text-scale-increase)
-(global-set-key (kbd "C--") 'text-scale-decrease)
-(global-set-key (kbd "C-s") 'isearch-forward-regexp)
-(global-set-key (kbd "C-r") 'isearch-backward-regexp)
-(global-set-key (kbd "C-M-s") 'isearch-forward)
-(global-set-key (kbd "C-M-r") 'isearch-backward)
-(global-set-key (kbd "C-x g") 'magit-status)
+(bind-keys
+ ("C-h a" . apropos)
+ ("M-f" . forward-word)
+ ("M-b" . backward-word)
+ ("M-/" . hippie-expand)
+ ("C-c q" . join-line)
+ ("C-+" . text-scale-increase)
+ ("C--" . text-scale-decrease)
+ ("C-s" . isearch-forward-regexp)
+ ("C-r" . isearch-backward-regexp)
+ ("C-M-s" . isearch-forward)
+ ("C-M-r" . isearch-backward)
+ ("C-x g" . magit-status))
 
 (when (file-exists-p custom-file) (load custom-file))
 (load (concat user-emacs-directory "package-bootstrap"))
 (load (concat user-emacs-directory "utils"))
 
+
 (pixel-scroll-mode)
-(use-package zenburn-theme :init (load-theme 'zenburn))
+(use-package nordic-night-theme :init (load-theme 'nordic-night))
+(set-frame-parameter nil 'alpha-background 90)
+(set-background-color "black")
+
 (use-package mood-line :init (mood-line-mode))
 (set-face-attribute 'header-line nil :box nil)
 (set-face-attribute 'mode-line nil :box nil)
 (set-face-attribute 'mode-line-highlight nil :box nil)
-(set-face-attribute 'mode-line-inactive nil :box nil)
+(set-face-attribute 'mode-line-inactive nil :box)
 (set-face-foreground 'vertical-border (face-attribute 'default :background))
 (set-face-background 'vertical-border (face-attribute 'default :background))
 
@@ -370,9 +378,16 @@
   :init
   (setq-default prettier-mode-sync-config-flag nil)
   (add-hook 'js-ts-mode-hook 'prettier-mode)
+  (add-hook 'typescript-ts-mode-hook 'prettier-mode)
+  (add-hook 'tsx-ts-mode-hook 'prettier-mode)
   (add-hook 'json-ts-mode-hook 'prettier-mode))
 
 (use-package magit
+  :init
+  ;; (add-hook 'magit-popup-mode-hook #'fit-window-to-buffer)
+  ;; (add-hook 'magit-create-buffer-hook #'fit-window-to-buffer)
+  ;; (add-hook 'magit-popup-help-mode-hook #'fit-window-to-buffer)
+  ;; (add-hook 'magit-refresh-popup-buffer-hook #'fit-window-to-buffer)
   :config
   (add-hook 'git-commit-setup-hook 'git-commit-turn-on-auto-fill))
 
@@ -388,10 +403,23 @@
 (use-package sudo-edit :commands sudo-edit)
 
 (use-package corfu
+  :bind (
+         :map corfu-mode-map
+         ("M-/" . completion-at-point))
   :custom
+  (corfu-auto t)
   (corfu-cycle t)
   (corfu-echo-documentation t)
   :init (global-corfu-mode))
+
+
+(use-package kind-icon
+  :ensure t
+  :after corfu
+  :custom
+  (kind-icon-default-face 'corfu-default) ; to compute blended backgrounds correctly
+  :config
+  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
 (use-package popup)
 
