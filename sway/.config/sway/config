@@ -19,7 +19,7 @@ set $right l
 # Your preferred terminal emulator
 set $term foot
 set $editor "emacsclient -nc"
-set $browser "firefox"
+set $browser "firefox-developer-edition"
 
 # Your preferred application launcher
 # Note: it's recommended that you pass the final command to sway
@@ -32,7 +32,7 @@ input 1:1:AT_Translated_Set_2_keyboard {
 }
 
 ### Output configuration
-output * bg ~/docs/pictures/wallpaper-sollux.jpg fill
+output * bg ~/docs/pictures/wallpaper-kanaya.png fill
 
 ### Key bindings
 #
@@ -171,13 +171,24 @@ mode "resize" {
 }
 bindsym $mod+r mode "resize"
 
-bindsym XF86MonBrightnessUp exec xbacklight -inc 5 # increase screen brightness
-bindsym XF86MonBrightnessDown exec xbacklight -dec 5 # decrease screen brightness
-bindsym XF86AudioRaiseVolume exec amixer set Master 1%+
-bindsym XF86AudioLowerVolume exec amixer set Master 1%-
-bindsym XF86AudioMute exec amixer set Master toggle
-
-bindsym $mod+Print exec grim -g "$(slurp)" - | wl-copy
+# increase keyboard light brightness
+bindsym $mod+XF86MonBrightnessUp exec echo 2 > /sys/class/leds/tpacpi::kbd_backlight/brightness
+# decrease keyboard light brightness
+bindsym $mod+XF86MonBrightnessDown exec echo 0 > /sys/class/leds/tpacpi::kbd_backlight/brightness
+# increase screen brightness
+bindsym XF86MonBrightnessUp exec xbacklight -inc 5
+# decrease screen brightness
+bindsym XF86MonBrightnessDown exec xbacklight -dec 5
+# increase volume
+bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ "+1%"
+# decrease volume
+bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ "-1%"
+# toggle mute
+bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SINK@ toggle
+# toggle mic mute
+bindsym XF86AudioMicMute exec pactl set-source-mute @DEFAULT_SOURCE@ toggle
+# printscreen
+bindsym Print exec grim -g "$(slurp)" - | wl-copy
 
 for_window [app_id="zoom"] floating enable
 for_window [app_id="zoom"] border normal
