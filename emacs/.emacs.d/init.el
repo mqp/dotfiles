@@ -151,6 +151,9 @@
 (setq-default show-paren-style 'parenthesis)
 (show-paren-mode 1)
 
+(require 'sql)
+(add-hook 'sql-mode-hook 'sql-highlight-postgres-keywords)
+
 (setq treesit-language-source-alist
   '((bash "https://github.com/tree-sitter/tree-sitter-bash")
     (c "https://github.com/tree-sitter/tree-sitter-c")
@@ -451,4 +454,5 @@
   (add-hook 'ssh-config-mode-hook 'turn-on-font-lock))
 
 (use-package sql-indent
-  :hook sql-mode)
+  :config
+  (add-hook 'sql-mode-hook 'sqlind-minor-mode))
