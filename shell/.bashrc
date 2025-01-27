@@ -92,3 +92,5 @@ vterm_prompt_end(){
 }
 
 PS1=$PS1'\[$(vterm_prompt_end)\]'
+
+eval "$(direnv hook bash)"
