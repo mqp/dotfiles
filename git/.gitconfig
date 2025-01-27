@@ -32,3 +32,5 @@
 	user = mqp
 [core]
 	excludesfile = /home/mqp/.gitignore
+[init]
+	defaultBranch = master
