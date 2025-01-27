@@ -423,24 +423,40 @@
 
 (use-package sudo-edit :commands sudo-edit)
 
-(use-package corfu
-  :bind (
-         :map corfu-mode-map
-         ("M-/" . completion-at-point))
+(use-package company
+  :diminish company-mode
+  :hook ((prog-mode) . company-mode)
+  :bind
+  (:map company-active-map ("M-/" . company-complete-common))
   :custom
-  (corfu-auto t)
-  (corfu-cycle t)
-  (corfu-echo-documentation t)
-  :init (global-corfu-mode))
-
-
-(use-package kind-icon
-  :ensure t
-  :after corfu
-  :custom
-  (kind-icon-default-face 'corfu-default) ; to compute blended backgrounds correctly
+  (company-minimum-prefix-length 1)
+  (company-tooltip-align-annotations t)
+  (company-require-match 'never)
+  ;; Don't use company in the following modes
+  (company-global-modes '(not shell-mode eaf-mode))
+  ;; Trigger completion immediately.
+  (company-idle-delay 0)
   :config
-  (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
+  (global-company-mode 1))
+
+;; (use-package corfu
+;;   :bind (
+;;          :map corfu-mode-map
+;;          ("M-/" . completion-at-point))
+;;   :custom
+;;   (corfu-auto t)
+;;   (corfu-cycle t)
+;;   (corfu-echo-documentation t)
+;;   :init (global-corfu-mode))
+
+
+;; (use-package kind-icon
+;;   :ensure t
+;;   :after corfu
+;;   :custom
+;;   (kind-icon-default-face 'corfu-default) ; to compute blended backgrounds correctly
+;;   :config
+;;   (add-to-list 'corfu-margin-formatters #'kind-icon-margin-formatter))
 
 (use-package popup)
 
