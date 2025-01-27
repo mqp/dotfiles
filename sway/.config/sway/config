@@ -27,12 +27,18 @@ set $menu dmenu_path | dmenu | xargs swaymsg exec --
 
 default_border none
 
-input 1:1:AT_Translated_Set_2_keyboard {
+input * {
   xkb_options ctrl:nocaps
+}
+
+input type:touchpad {
+    dwt disabled
 }
 
 ### Output configuration
 output * bg "~/docs/pictures/wallpaper-elliott-cat.png" fill
+
+output HDMI-A-1 scale 2
 
 ### Key bindings
 #
@@ -192,6 +198,10 @@ bindsym Print exec grim -g "$(slurp)" - | wl-copy
 
 for_window [app_id="zoom"] floating enable
 for_window [app_id="zoom"] border normal
+
+set $laptop eDP-1
+bindswitch --reload --locked lid:on output $laptop disable
+bindswitch --reload --locked lid:off output $laptop enable
 
 bar {
     swaybar_command waybar
