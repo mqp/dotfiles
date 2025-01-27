@@ -65,10 +65,28 @@
 
 (pixel-scroll-mode)
 (use-package nordic-night-theme :init (load-theme 'nordic-night))
-(set-frame-parameter nil 'alpha-background 90)
 (set-background-color "black")
 
-(use-package mood-line :init (mood-line-mode))
+(use-package mood-line
+  :init
+  (mood-line-mode)
+  :config
+  (setq mood-line-glyph-alist mood-line-glyphs-ascii)
+  (setq mood-line-format
+        (mood-line-defformat
+         :left
+         (((mood-line-segment-modal)                  . " ")
+          ((or (mood-line-segment-buffer-status) " ") . " ")
+          ((mood-line-segment-buffer-name)            . "  ")
+          ((mood-line-segment-cursor-position)        . " ")
+          (mood-line-segment-scroll))
+         :right
+         (((mood-line-segment-major-mode) . "  ")
+          ((mood-line-segment-misc-info)  . "  ")
+          ((mood-line-segment-checker)    . "  ")
+          ((mood-line-segment-process)    . "  ")))
+        ))
+
 (set-face-attribute 'header-line nil :box nil)
 (set-face-attribute 'mode-line nil :box nil)
 (set-face-attribute 'mode-line-highlight nil :box nil)

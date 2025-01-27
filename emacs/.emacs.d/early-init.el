@@ -21,6 +21,8 @@
 (menu-bar-mode -1)
 
 ;; set up visual frame defaults before any frame is created
+(add-to-list 'default-frame-alist '(background-color . "black"))
+(add-to-list 'default-frame-alist '(alpha-background . 90))
 (add-to-list 'default-frame-alist '(font . "Fira Code-11"))
 (setq-default frame-title-format
               '(:eval
