@@ -202,6 +202,7 @@
 	      (sit-for 0.75))))
 
 
+(add-to-list 'major-mode-remap-alist '(python-mode . python-ts-mode))
 (add-to-list 'major-mode-remap-alist '(javascript-mode . js-ts-mode))
 (add-to-list 'major-mode-remap-alist '(html-mode . html-ts-mode))
 (add-to-list 'major-mode-remap-alist '(conf-toml-mode . toml-ts-mode))
@@ -214,6 +215,7 @@
 
 (require 'eglot)
 (setq-default eglot-ignored-server-capabilities '(:inlayHintProvider))
+(add-hook 'python-ts-mode-hook 'eglot-ensure)
 
 (require 'typescript-ts-mode)
 (add-to-list 'auto-mode-alist '("\\.ts\\'" . typescript-ts-mode))
