@@ -208,6 +208,10 @@
 (add-to-list 'major-mode-remap-alist '(js-json-mode . json-ts-mode))
 (add-to-list 'major-mode-remap-alist '(rust-mode . rust-ts-mode))
 
+(use-package envrc
+  :ensure t
+  :hook (after-init . envrc-global-mode))
+
 (require 'eglot)
 (setq-default eglot-ignored-server-capabilities '(:inlayHintProvider))
 
