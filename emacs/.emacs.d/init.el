@@ -64,7 +64,9 @@
 
 
 (pixel-scroll-mode)
-(use-package nordic-night-theme :init (load-theme 'nordic-night))
+(use-package nordic-night-theme
+  :straight (:host codeberg :repo "ashton314/nordic-night")
+  :init (load-theme 'nordic-night))
 (set-background-color "black")
 
 (use-package mood-line
@@ -231,6 +233,20 @@
 (require 'yaml-ts-mode)
 (add-to-list 'auto-mode-alist '("\\.\\(yaml\\|yml\\)\\'" . yaml-ts-mode))
 
+(use-package jinja2-mode
+  :config
+  (setq-default sgml-basic-offset 4))
+
+(use-package lua-mode
+  :mode (("\\.lua$" . lua-mode))
+  :init (add-hook 'lua-mode-hook 'eglot-ensure))
+
+
+(setq-default eglot-workspace-configuration
+              '(:Lua (:diagnostics (:globals ["love"])
+                                   :runtime (:version "LuaJIT" :special (:love (:filesystem (:load "loadfile"))))
+                      :workspace (:library ["/usr/lib/lua-language-server/meta/3rd/love2d/library/love"]))))
+
 (use-package markdown-mode
   :mode (("\\.md$" . markdown-mode)
          ("README\\.md$" . gfm-mode)))
@@ -349,6 +365,9 @@
    consult--source-bookmark consult--source-recent-file
    consult--source-project-recent-file
    :preview-key "M-.")
+  ;; local modes added to prog-mode hooks
+  (add-to-list 'consult-preview-allowed-hooks 'python-ts-mode)
+  (add-to-list 'consult-preview-allowed-hooks 'markdown-mode)
   (setq consult-narrow-key "<"))
 
 (use-package marginalia
@@ -472,18 +491,26 @@
 
 (use-package glsl-mode :mode "\\.\\(glsl\\|vert\\|frag\\)$")
 
+;; web-mode
+(defun web-mode-set-engine-hook ()
+  (add-hook
+   'hack-local-variables-hook
+   (lambda ()
+     (if (boundp 'mqp-web-mode-engine)
+         (web-mode-set-engine mqp-web-mode-engine)
+         (web-mode-set-engine "none")))))
+
 (use-package web-mode
   :mode "\\.html$"
+  :hook (web-mode . web-mode-set-engine-hook)
   :config
   (setq-default
-   web-mode-code-indent-offset 2
-   web-mode-markup-indent-offset 2
-   web-mode-css-indent-offset 2
+   web-mode-code-indent-offset 4
+   web-mode-markup-indent-offset 4
+   web-mode-css-indent-offset 4
    web-mode-ac-sources-alist
    '(("css" . (ac-source-css-property))
      ("html" . (ac-source-words-in-buffer ac-source-abbrev)))))
-
-(use-package handlebars-mode :mode "\\.hbs$")
 
 (use-package ssh-config-mode
   :mode ((".ssh/config\\'" . ssh-config-mode)
