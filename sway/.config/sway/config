@@ -38,7 +38,7 @@ input type:touchpad {
 ### Output configuration
 output * bg "~/docs/pictures/wallpaper-elliott-cat.png" fill
 
-output HDMI-A-1 scale 2
+output HDMI-A-1 scale 1.5
 
 ### Key bindings
 #
