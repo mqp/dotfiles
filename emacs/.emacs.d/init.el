@@ -253,6 +253,10 @@
 
 (setq-default css-indent-offset 2)
 
+(use-package reformatter)
+(use-package ruff-format
+  :init (add-hook 'python-mode-hook 'ruff-format-on-save-mode))
+
 (use-package wgsl-mode
   :straight (:host github :repo "acowley/wgsl-mode")
   :mode "\\.wgsl$")
@@ -304,25 +308,35 @@
 
 (use-package vertico-flat
   :after vertico
-  :bind (:map vertico-flat-map ("TAB" . vertico-next)))
+(add-hook 'python-mode-hook 'ruff-format-on-save-mode)  :bind (:map vertico-flat-map ("TAB" . vertico-next)))
 
+;; Example configuration for Consult
 (use-package consult
-  :bind (;; C-c bindings (mode-specific-map)
+  ;; Replace bindings. Lazily loaded by `use-package'.
+  :bind (;; C-c bindings in `mode-specific-map'
+         ("C-c M-x" . consult-mode-command)
          ("C-c h" . consult-history)
-         ("C-c m" . consult-mode-command)
          ("C-c k" . consult-kmacro)
-         ;; C-x bindings (ctl-x-map)
+         ("C-c m" . consult-man)
+         ("C-c i" . consult-info)
+         ([remap Info-search] . consult-info)
+         ;; C-x bindings in `ctl-x-map'
          ("C-x M-:" . consult-complex-command)     ;; orig. repeat-complex-command
          ("C-x b" . consult-buffer)                ;; orig. switch-to-buffer
          ("C-x 4 b" . consult-buffer-other-window) ;; orig. switch-to-buffer-other-window
          ("C-x 5 b" . consult-buffer-other-frame)  ;; orig. switch-to-buffer-other-frame
+         ("C-x t b" . consult-buffer-other-tab)    ;; orig. switch-to-buffer-other-tab
          ("C-x r b" . consult-bookmark)            ;; orig. bookmark-jump
          ("C-x p b" . consult-project-buffer)      ;; orig. project-switch-to-buffer
+         ;; Custom M-# bindings for fast register access
+         ("M-#" . consult-register-load)
+         ("M-'" . consult-register-store)          ;; orig. abbrev-prefix-mark (unrelated)
+         ("C-M-#" . consult-register)
          ;; Other custom bindings
          ("M-y" . consult-yank-pop)                ;; orig. yank-pop
-         ("<help> a" . consult-apropos)            ;; orig. apropos-command
-         ;; M-g bindings (goto-map)
+         ;; M-g bindings in `goto-map'
          ("M-g e" . consult-compile-error)
+         ("M-g r" . consult-grep-match)
          ("M-g f" . consult-flymake)               ;; Alternative: consult-flycheck
          ("M-g g" . consult-goto-line)             ;; orig. goto-line
          ("M-g M-g" . consult-goto-line)           ;; orig. goto-line
@@ -331,15 +345,14 @@
          ("M-g k" . consult-global-mark)
          ("M-g i" . consult-imenu)
          ("M-g I" . consult-imenu-multi)
-         ;; M-s bindings (search-map)
-         ("M-s d" . consult-find)
-         ("M-s D" . consult-locate)
+         ;; M-s bindings in `search-map'
+         ("M-s d" . consult-find)                  ;; Alternative: consult-fd
+         ("M-s c" . consult-locate)
          ("M-s g" . consult-grep)
          ("M-s G" . consult-git-grep)
          ("M-s r" . consult-ripgrep)
          ("M-s l" . consult-line)
          ("M-s L" . consult-line-multi)
-         ("M-s m" . consult-multi-occur)
          ("M-s k" . consult-keep-lines)
          ("M-s u" . consult-focus-lines)
          ;; Isearch integration
@@ -353,22 +366,30 @@
          :map minibuffer-local-map
          ("M-s" . consult-history)                 ;; orig. next-matching-history-element
          ("M-r" . consult-history))                ;; orig. previous-matching-history-element
-  :init
-  (setq xref-show-xrefs-function #'consult-xref
-        xref-show-definitions-function #'consult-xref)
-  :config
+
+ :init
+ (setq xref-show-xrefs-function #'consult-xref
+       xref-show-definitions-function #'consult-xref)
+ :config
+   ;; Optionally configure preview. The default value
+  ;; is 'any, such that any key triggers the preview.
+  ;; (setq consult-preview-key 'any)
+  ;; (setq consult-preview-key "M-.")
+  ;; (setq consult-preview-key '("S-<down>" "S-<up>"))
+  ;; For some commands and buffer sources it is useful to configure the
+  ;; :preview-key on a per-command basis using the `consult-customize' macro.
   (consult-customize
-   consult-theme
-   :preview-key '(:debounce 0.2 any)
-   consult-ripgrep consult-git-grep consult-grep
+   consult-theme :preview-key '(:debounce 0.2 any)
+   consult-ripgrep consult-git-grep consult-grep consult-man
    consult-bookmark consult-recent-file consult-xref
-   consult--source-bookmark consult--source-recent-file
-   consult--source-project-recent-file
+   consult-source-bookmark consult-source-file-register
+   consult-source-recent-file consult-source-project-recent-file
    :preview-key "M-.")
-  ;; local modes added to prog-mode hooks
-  (add-to-list 'consult-preview-allowed-hooks 'python-ts-mode)
-  (add-to-list 'consult-preview-allowed-hooks 'markdown-mode)
-  (setq consult-narrow-key "<"))
+   ;;:preview-key '(:debounce 0.2 any))
+ ;; local modes added to prog-mode hooks
+ (add-to-list 'consult-preview-allowed-hooks 'python-ts-mode)
+ (add-to-list 'consult-preview-allowed-hooks 'markdown-mode)
+ (setq consult-narrow-key "<"))
 
 (use-package marginalia
   :bind (:map minibuffer-local-map ("M-A" . marginalia-cycle))
@@ -390,9 +411,6 @@
 (use-package embark-consult :after (embark consult))
 
 (use-package so-long :init (global-so-long-mode))
-
-(require 'fsr-mode)
-(add-to-list 'auto-mode-alist '("firestore\\.rules$" . fsr-mode))
 
 (use-package vterm
   :config
