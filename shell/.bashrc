@@ -43,7 +43,7 @@ export ALTERNATE_EDITOR=emacs
 export HISTCONTROL=ignoredups
 export HISTSIZE=1000
 export HISTFILESIZE=2000
-export PATH=$PATH:$HOME/bin:$HOME/.cargo/bin:$HOME/.local/bin
+export PATH=$PATH:$HOME/bin:$HOME/.cargo/bin:$HOME/.local/bin:$HOME/src/sandbox/bin
 export GRADLE_OPTS="-Dorg.gradle.daemon=true -Dorg.gradle.parallel=true"
 export JAVA_OPTS="-Xms128m -Xmx16384m"
 export _JAVA_AWT_WM_NONREPARENTING=1
@@ -51,6 +51,7 @@ export BOTO_CONFIG="~/.aws/config"
 export VDPAU_DRIVER=radeonsi
 export GOOGLE_APPLICATION_CREDENTIALS_DEV="/home/mqp/dev-firebase.json"
 export GOOGLE_APPLICATION_CREDENTIALS_PROD="/home/mqp/prod-firebase.json"
+export EXA_API_KEY="$(</home/mqp/exa-api-key)"
 
 # https://bugzilla.mozilla.org/show_bug.cgi?id=1751363
 export MOZ_DISABLE_RDD_SANDBOX=1
