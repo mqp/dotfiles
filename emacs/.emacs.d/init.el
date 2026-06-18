@@ -186,6 +186,7 @@
     (lua "https://github.com/Azganoth/tree-sitter-lua")
     (make "https://github.com/alemuller/tree-sitter-make")
     (markdown "https://github.com/ikatyang/tree-sitter-markdown")
+    (nix "https://github.com/nix-community/tree-sitter-nix")
     (python "https://github.com/tree-sitter/tree-sitter-python")
     (rust "https://github.com/tree-sitter/tree-sitter-rust")
     (toml "https://github.com/tree-sitter/tree-sitter-toml")
@@ -210,13 +211,15 @@
 (add-to-list 'major-mode-remap-alist '(conf-toml-mode . toml-ts-mode))
 (add-to-list 'major-mode-remap-alist '(js-json-mode . json-ts-mode))
 (add-to-list 'major-mode-remap-alist '(rust-mode . rust-ts-mode))
+(add-to-list 'major-mode-remap-alist '(nix-mode . nix-ts-mode))
 
 (use-package envrc
   :ensure t
   :hook (after-init . envrc-global-mode))
 
 (require 'eglot)
-(setq-default eglot-ignored-server-capabilities '(:inlayHintProvider))
+(setq-default eglot-ignored-server-capabilities '(:inlayHintProvider :codeActionsProvider))
+(setq-default eglot-code-action-indications nil)
 (add-hook 'python-ts-mode-hook 'eglot-ensure)
 
 (require 'typescript-ts-mode)
@@ -232,6 +235,20 @@
 
 (require 'yaml-ts-mode)
 (add-to-list 'auto-mode-alist '("\\.\\(yaml\\|yml\\)\\'" . yaml-ts-mode))
+
+(defun nix-eglot-format-before-save ()
+  "Format Nix buffers with Eglot before saving."
+  (when (and (derived-mode-p 'nix-ts-mode) (eglot-current-server))
+    (eglot-format-buffer)))
+
+(use-package nix-ts-mode
+  :mode "\\.nix\\'"
+  :hook (nix-ts-mode . eglot-ensure)
+  :init
+  (add-hook 'before-save-hook #'nix-eglot-format-before-save)
+  :config
+  (with-eval-after-load 'eglot
+    (add-to-list 'eglot-server-programs '(nix-ts-mode . ("nixd")))))
 
 (use-package jinja2-mode
   :config
