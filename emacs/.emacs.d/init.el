@@ -9,7 +9,6 @@
  echo-keystrokes 0.1
  message-log-max t
  mouse-wheel-mode t
- xterm-mouse-mode t
  color-theme-is-global t
  delete-by-moving-to-trash t
  font-lock-maximum-decoration t
@@ -43,6 +42,7 @@
  electric-pair-inhibit-predicate 'electric-pair-conservative-inhibit
  )
 
+(xterm-mouse-mode 1)
 
 (bind-keys
  ("C-h a" . apropos)
