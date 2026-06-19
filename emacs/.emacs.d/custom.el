@@ -5,10 +5,12 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(connection-local-criteria-alist
-   '(((:application tramp :protocol "kubernetes") tramp-kubernetes-connection-local-default-profile)
+   '(((:application vc-git) vc-git-connection-default-profile)
+     ((:application tramp :protocol "kubernetes") tramp-kubernetes-connection-local-default-profile)
      ((:application tramp) tramp-connection-local-default-system-profile tramp-connection-local-default-shell-profile)))
  '(connection-local-profile-alist
-   '((tramp-kubernetes-connection-local-default-profile (tramp-config-check . tramp-kubernetes--current-context-data)
+   '((vc-git-connection-default-profile (vc-git--program-version))
+     (tramp-kubernetes-connection-local-default-profile (tramp-config-check . tramp-kubernetes--current-context-data)
                                                         (tramp-extra-expand-args 97
                                                                                  (tramp-kubernetes--container
                                                                                   (car tramp-current-connection))
@@ -46,9 +48,11 @@
                                           (vsize . number) (rss . number) (etime . number) (pcpu . number)
                                           (pmem . number) (args)))
      (tramp-connection-local-default-shell-profile (shell-file-name . "/bin/sh") (shell-command-switch . "-c"))
-     (tramp-connection-local-default-system-profile (path-separator . ":") (null-device . "/dev/null"))))
+     (tramp-connection-local-default-system-profile (path-separator . ":") (null-device . "/dev/null")
+                                                    (exec-suffixes ""))))
  '(custom-safe-themes
-   '("22ebd67118086f925a4ac95975233d5b2b871fe3bd21e24a92c2f3901a5803c5"
+   '("7c7026a406042e060bce2b56c77d715c3a4e608c31579d336cb825b09e60e827"
+     "22ebd67118086f925a4ac95975233d5b2b871fe3bd21e24a92c2f3901a5803c5"
      "3b967bcf24a5f25c51503a24790fecfe9136dcba5c5532fa9a3075cba7c9f4af"
      "88267200889975d801f6c667128301af0bc183f3450c4b86138bfb23e8a78fb1"
      "c171012778b7cf795ac215b91e1ecab8e3946738d03095397a790ed41e0a3386"

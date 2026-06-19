@@ -20,7 +20,18 @@
 (scroll-bar-mode -1)
 (menu-bar-mode -1)
 
-;; set up visual frame defaults before any frame is created
+;; for terminals, adopt the terminal background color
+(defun disable-terminal-background ()
+  (unless (display-graphic-p)
+    (set-face-background 'default "unspecified-bg" (selected-frame))))
+
+(add-hook 'window-setup-hook #'disable-terminal-background)
+(add-hook 'after-make-frame-functions
+          (lambda (frame)
+            (unless (display-graphic-p frame)
+              (set-face-background 'default "unspecified-bg" frame))))
+
+;; for graphical clients, set up visual frame defaults before any frame is created
 (add-to-list 'default-frame-alist '(background-color . "black"))
 (add-to-list 'default-frame-alist '(alpha-background . 90))
 (add-to-list 'default-frame-alist '(font . "Fira Code-11"))

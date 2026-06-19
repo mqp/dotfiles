@@ -65,9 +65,9 @@
 
 (pixel-scroll-mode)
 (use-package nordic-night-theme
-  :straight (:host codeberg :repo "ashton314/nordic-night")
-  :init (load-theme 'nordic-night))
-(set-background-color "black")
+  :ensure t
+  :config (load-theme 'nordic-midnight))
+;(set-background-color "black")
 
 (use-package mood-line
   :init
