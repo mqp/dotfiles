@@ -270,6 +270,9 @@
 
 (setq-default css-indent-offset 2)
 
+(use-package ghostel
+  :ensure t)
+
 (use-package reformatter)
 (use-package ruff-format
   :init (add-hook 'python-mode-hook 'ruff-format-on-save-mode))
@@ -428,12 +431,6 @@
 (use-package embark-consult :after (embark consult))
 
 (use-package so-long :init (global-so-long-mode))
-
-(use-package vterm
-  :config
-  (setq-default vterm-buffer-name-string "vterm %s"
-                vterm-always-compile-module t
-                vterm-max-scrollback 10000))
 
 ;; (use-package lsp-mode
 ;;   :commands lsp
