@@ -250,6 +250,8 @@
   (with-eval-after-load 'eglot
     (add-to-list 'eglot-server-programs '(nix-ts-mode . ("nixd")))))
 
+(use-package gcode-mode)
+
 (use-package jinja2-mode
   :config
   (setq-default sgml-basic-offset 4))
