@@ -52,6 +52,7 @@ export VDPAU_DRIVER=radeonsi
 export GOOGLE_APPLICATION_CREDENTIALS_DEV="/home/mqp/dev-firebase.json"
 export GOOGLE_APPLICATION_CREDENTIALS_PROD="/home/mqp/prod-firebase.json"
 export EXA_API_KEY="$(</home/mqp/exa-api-key)"
+export SSH_AUTH_SOCK=$XDG_RUNTIME_DIR/ssh-agent.socket
 
 # https://bugzilla.mozilla.org/show_bug.cgi?id=1751363
 export MOZ_DISABLE_RDD_SANDBOX=1
