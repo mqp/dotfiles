@@ -64,9 +64,29 @@
 
 
 (pixel-scroll-mode)
+(defun my/load-theme ()
+  (load-theme 'nordic-midnight t)
+  (set-face-attribute 'header-line nil :box nil)
+  (set-face-attribute 'mode-line nil :box nil)
+  (set-face-attribute 'mode-line-highlight nil :box nil)
+  (set-face-attribute 'mode-line-inactive nil :box)
+  (set-face-foreground 'vertical-border (face-attribute 'default :background))
+  (set-face-background 'vertical-border (face-attribute 'default :background)))
+
+;; nordic-night picks its full-color or 256-color palette when it's loaded,
+;; based on the current display. The daemon has no graphical frame at
+;; startup, so defer loading until the first GUI frame exists.
+(defun my/load-theme-on-first-gui-frame ()
+  (when (display-graphic-p)
+    (my/load-theme)
+    (remove-hook 'server-after-make-frame-hook #'my/load-theme-on-first-gui-frame)))
+
 (use-package nordic-night-theme
   :ensure t
-  :config (load-theme 'nordic-midnight))
+  :config
+  (if (daemonp)
+      (add-hook 'server-after-make-frame-hook #'my/load-theme-on-first-gui-frame)
+    (my/load-theme)))
 ;(set-background-color "black")
 
 (use-package mood-line
@@ -88,13 +108,6 @@
           ((mood-line-segment-checker)    . "  ")
           ((mood-line-segment-process)    . "  ")))
         ))
-
-(set-face-attribute 'header-line nil :box nil)
-(set-face-attribute 'mode-line nil :box nil)
-(set-face-attribute 'mode-line-highlight nil :box nil)
-(set-face-attribute 'mode-line-inactive nil :box)
-(set-face-foreground 'vertical-border (face-attribute 'default :background))
-(set-face-background 'vertical-border (face-attribute 'default :background))
 
 ;; Do not allow the cursor in the minibuffer prompt
 (setq minibuffer-prompt-properties
